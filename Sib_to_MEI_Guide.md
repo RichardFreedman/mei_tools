@@ -6,6 +6,26 @@ Last Update:  December 2025
 - Exporting from Sibelius to MEI with sibmei plugin
 - Post Processing with [MEI Tools](https://github.com/RichardFreedman/mei_tools/blob/main/README.md)  
 
+## Table of Contents
+
+- [Authors](#authors)
+- [What is the sibmei plugin?](#what-is-the-sibmei-plugin)
+- [What are MEI Tools?](#what-are-mei-tools)
+- [Preparing Sibelius Editions for MEI: Engraving and "E" Files!](#preparing-sibelius-editions-for-mei-engraving-and-e-files)
+- [A Minimal Example](#a-minimal-example)
+- [Metadata](#metadata)
+- [Staves](#staves)
+- [Incipits + Measure Numbers](#incipits--measure-numbers)
+- [First + Second Endings](#first--second-endings)
+- [Time Signatures](#time-signatures)
+- [Rests in 3/1 Bars](#rests-in-31-bars)
+- [Accidentals + Musica ficta](#accidentals--musica-ficta)
+- [Sib to MEI to Verovio](#sib-to-mei-to-verovio)
+- [Final longa](#final-longa)
+- [Ligatures + Coloration](#ligatures--coloration)
+- [Metronome markings](#metronome-markings)
+- [Lyrics](#lyrics)
+
 ## Authors
 
 - Richard Freedman (Haverford College, USA)
