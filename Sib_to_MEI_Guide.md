@@ -133,7 +133,7 @@ Last Update:  December 2025
 - We can nevertheless check for these 'whole measure rests' and correct them with MEI Tools
 
 
-### Accidentals + Musica ficta
+## Accidentals + Musica ficta
 
 - Accidentals on the staff are entered in the usual way
 - For E-file only:  Musica ficta and other editorial accidentals above the staff:  color the note red, then use Sibelius standard plug in to “Add Ficta Above Note”.  (Find plug in via Notations menu)
