@@ -15,6 +15,7 @@ Last Update:  December 2025
 - [A Minimal Example](#a-minimal-example)
 - [Metadata](#metadata)
 - [Staves](#staves)
+- [Staves with Transposing Instruments](#staves-with-transposing-instruments)
 - [Incipits + Measure Numbers](#incipits--measure-numbers)
 - [First + Second Endings](#first--second-endings)
 - [Time Signatures](#time-signatures)
@@ -85,6 +86,12 @@ Last Update:  December 2025
 
 
 ![Image 3](images/image_3.png)
+
+## Staves with Transposing Instruments
+
+- Sibelius will export transposing instruments correctly to MEI, provided that you have set the transposition in the Sibelius instrument definition.  This is particularly important for any part with with a G8va clef.
+- The best practice is to 'play' the first note of each part to make sure they sound in the correct octave (that is:  transposed 8va down in the case of the G8 clef parts).  If the note sounds an octave too high, then the transposition is not set correctly in the Sibelius instrument definition.  
+- In this case the best solution is to change the instrument definition to a "Tenor", which has the correct transposition for G8va clef.  (You can of course rename the part to "Altus" or whatever is appropriate for your edition.)
 
 
 ## Incipits + Measure Numbers
