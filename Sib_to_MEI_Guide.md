@@ -66,7 +66,7 @@ Last Update:  December 2025
 
 - Here is a  minimal example prepared for sibmei, showing engraving and encoding guidelines for variants, emendations, reconstructions. 
 
-![Image 1](images/image_1.png)
+![Minimal Example](images/image_1.png)
 
 
 ## Metadata
@@ -74,7 +74,7 @@ Last Update:  December 2025
 - Piece title and metadata for Sibelius--add Movement for Mass!
 - In the case of Mass movements, be sure to include the title of the movement in the title field: `Missa Ave maria:  Kyrie`
 
-![Image 2](images/image_2.png)
+![Metadata in Sibelius](images/image_2.png)
 
 
 ## Staves
@@ -85,13 +85,17 @@ Last Update:  December 2025
 
 
 
-![Image 3](images/image_3.png)
+![Staves](images/image_3.png)
 
 ## Staves with Transposing Instruments
 
 - Sibelius will export transposing instruments correctly to MEI, provided that you have set the transposition in the Sibelius instrument definition.  This is particularly important for any part with with a G8va clef.
 - The best practice is to 'play' the first note of each part to make sure they sound in the correct octave (that is:  transposed 8va down in the case of the G8 clef parts).  If the note sounds an octave too high, then the transposition is not set correctly in the Sibelius instrument definition.  
 - In this case the best solution is to change the instrument definition to a "Tenor", which has the correct transposition for G8va clef.  (You can of course rename the part to "Altus" or whatever is appropriate for your edition.)
+
+Here for example, the Altus part is defined as a "Tenor" in Sibelius, so that the transposition is correct in the MEI export.  Then we rename the part to "Altus" for engraving purposes.
+
+![Staves with Transposing Instruments](images/g8_rename.png)
 
 
 ## Incipits + Measure Numbers
@@ -102,9 +106,10 @@ Last Update:  December 2025
 - For Mass movements:  use continuous bar numbers for each movement (Kyrie, Christe, and Kyrie as a single file with continous bar numbers)
 - Bar numbers can be switched on or off as part of Verovio (but not dynamically by the end user)
 
+In this example there is an incipit bar numbered "0", followed by measure 1.  You can ignore the strange symbols in the incipit bar--these will be removed with MEI Tools if you choose to do so.
 
-![Image 4](images/image_4.png)
 
+![Incipit and Measure Numbering](images/image_4.png)
 
 
 
@@ -114,11 +119,11 @@ Last Update:  December 2025
 - Measure numbers are continuous across the two endings.  Here:  first ending = 2, second ending = 3.
 
   
-![Image 5](images/image_5.png)
+![First and Second Endings](images/image_5.png)
 
 #### Find the first and second endings under the "Lines" menu . . .
 
-![Image 6](images/image_6.png)
+![Location of First and Second Ending Lines](images/image_6.png)
 
 
 ## Time Signatures
@@ -128,29 +133,29 @@ Last Update:  December 2025
 - MEI Tools ‘normalizes’ these the meter.unit and meter.count attributes according to your specified preferences.
 
 
-![Image 7](images/image_7.png)
+![Time Signatures](images/image_7.png)
 
 
-![Image 8](images/image_8.png)
+![Time Signatures](images/image_8.png)
 
 
 - If desired as part of original engraved Sibelius file, we can ‘hide’ the time signature and cover it with a symbol from Notations>Symbols menu in Sibelius.
 - The resulting MEI will nevertheless retain the correct underlying signature after MEIMassaging. In these examples:  4/2 is the correct time signature, but we engrave as Cut C
 
-![Image 9](images/image_9.png)
+![Hidden Time Signatures](images/image_9.png)
 
-![Image 10](images/image_10.png)
+![Hidden Time Signatures](images/image_10.png)
 
 #### First “hide” the real time signature
 
 - Next, select anywhere in the relevant bar and use Notations>Symbols to select the prefered engraving sign.  Repeat for each staff.
 
-![Image 11](images/image_11.png)
+![Hidden Time Signatures](images/image_11.png)
 
 
 - “3/1” bars can be left as they are, or if you prefer, “hide” the 3/1 and engrave with “3” from Notations>Symbols
 
-![Image 15](images/image_15.png)
+![Hidden Time Signatures](images/image_15.png)
   
 - Odd bars such as 10/2 (often at end of section) or 2/2 can be given their correct time but hidden, without the need to add engraved sign.
 
@@ -165,7 +170,7 @@ Last Update:  December 2025
 - Accidentals on the staff are entered in the usual way
 - For E-file only:  Musica ficta and other editorial accidentals above the staff:  color the note red, then use Sibelius standard plug in to “Add Ficta Above Note”.  (Find plug in via Notations menu)
 
-![Image 12](images/image_12.png)
+![Accidentals and Musica Ficta](images/image_12.png)
 
 - Final output of MEIMassaging for a staff accidental: `<accid accid="f"/>`
 
@@ -177,7 +182,7 @@ Last Update:  December 2025
 ```
 
 
-![Image 13](images/image_13.png)
+![Accidentals and Music Ficta](images/image_13.png)
 
 
 
@@ -201,7 +206,7 @@ Last Update:  December 2025
 
 - MEIMassaging produces longa: `<note oct="3" pname="d" dur="long">`
 
-![Image 14](images/image_14.png)
+![Final Longa](images/image_14.png)
 
 
 
@@ -214,7 +219,7 @@ Last Update:  December 2025
 - These can be preserved or removed as with MEI Tools
 - They are not supported in the current Verovio development
 
-![Image 16](images/image_16.png)
+![Ligatures](images/image_16.png)
 
 ## Metronome markings
 
@@ -223,7 +228,7 @@ Last Update:  December 2025
 - They are not supported in the current Verovio development.
 
 
-![Image 17](images/image_17.png)
+![Metronome Markings](images/image_17.png)
 
 ## Lyrics
 
@@ -231,6 +236,6 @@ Last Update:  December 2025
 - Be sure that each syllable is attached to a note (and never to a rest or barline). Syllables attached to rests or barlines will produce invalid MEI files after sibmei.
 - Elisions (for instance between `ky-ri-e_e-le-i_son`) will be engraved by Sibelius with a small curving line.  Sib MEI exports these in a way that creates TWO syllables for a given note.  We correct these with MEI Tools to display as two syllables connected by an underscore (`_`)
 
-
+![Syllables with Elisions](images/screenshot_5183.png)
 
 
