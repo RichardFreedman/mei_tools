@@ -46,7 +46,7 @@ Last Update:  December 2025
 
 ## What are MEI Tools?
 
-- [MEI Tools](https://github.com/RichardFreedman/mei_tools/blob/main/README.md) are a set of Python scripts that transform the flat MEI files produced by sibmei as rich MEI files.  See:  
+- [MEI Tools](https://github.com/RichardFreedman/mei_tools/blob/main/README.md) are a set of Python scripts that transform the flat MEI files produced by sibmei as rich MEI files. 
 - MEI Tools are modular:  various functions can be included/excluded depending on the required output. These include:
 - editing metadata
 - removing and correcting music features such as inicipts, lyrics, musica ficta, etc.
