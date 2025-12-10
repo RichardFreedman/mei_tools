@@ -354,7 +354,7 @@ See below for screenshots of this process.
 
 > <details>
 > <summary>Show Image</summary>
-> <img src="images/MS_stem_1.png" alt="Final Composer and Title" />
+> <img src="images/ms_stem_1.png" alt="Final Composer and Title" />
 >
 > </details>
 
@@ -366,7 +366,7 @@ And now the result after resetting shapes and positions:
 
 > <details>
 > <summary>Show Image</summary>
-> <img src="images/MS_stem_2.png" alt="Final Composer and Title" />
+> <img src="images/ms_stem_2.png" alt="Final Composer and Title" />
 >
 > </details>
 
