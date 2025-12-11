@@ -541,7 +541,7 @@ The resulting MEI in Verovio:
 
 ## Ligatures + Coloration
 
-CRIM editions do not use ligatures or coloration.  MuseScore does not support such brackets.
+- CRIM editions do not use ligatures or coloration.  MuseScore does not support such brackets.
 
     
 ##  Metronome markings
@@ -549,11 +549,7 @@ CRIM editions do not use ligatures or coloration.  MuseScore does not support su
 - They are not used in CRIM editions. Delete them from any MuseScore file before export to PDF.
 - We also check for and remove these from MEI files.
 
-
 ## MuseScore to MEI and PDF
-
-
-<!-- get image for MEI and PDF export -->
 
 
 - **export to MEI** using MuseScore `File > Export` menu, selecting `MEI` as the file type.  Note that we can also do this for a corpus of files with a command-line script using `mscore` (see [MuseScore Command Line Export](https://musescore.org/en/handbook/command-line-export) for details)
