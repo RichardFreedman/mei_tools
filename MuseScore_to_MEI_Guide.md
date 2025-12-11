@@ -4,75 +4,45 @@ Last Update:  December 2025
 
 - Guidelines for Editors preparing MuseScore Files
 - Exporting from MuseScore to MEI 
-- Post Processing with [MEI Tools](https://github.com/RichardFreedman/mei_tools/blob/main/README.md)  
+- Post Processing with [MEI Tools](https://github.com/RichardFreedman/mei_tools/blob/main/README.md)
+- [MuseScore Handbook](https://handbook.musescore.org/)
 
 ## Table of Contents
-
-- [Authors](#authors)
-- [What are MEI Tools?](#what-are-mei-tools)
-- [Preparing MuseScore Editions for MEI: Engraving and "E" Files!](#preparing-sibelius-editions-for-mei-engraving-and-e-files)
-- [MusicXML to MEI with MuseScore](#musicxml-to-mei-with-musescore)
-- [CRIM Style Sheet for MuseScore MEI Export](#style-sheets-for-musescore-mei-export)
-- [Metadata](#metadata)
-- [Staves, Instrument Types, and Voice Names](#staves)
-- [Clefs](#clefs)
-- [Incipits + Measure Numbers](#incipits--measure-numbers)
-- [First + Second Endings](#first--second-endings)
-- [Original Note Values and Time Signatures](#time-signatures)
-- [Rests in 3/1 Bars](#rests-in-31-bars)
-- [Accidentals + Musica ficta](#accidentals--musica-ficta)
-- [Sib to MEI to Verovio](#sib-to-mei-to-verovio)
-- [Final longa](#final-longa)
-- [Ligatures + Coloration](#ligatures--coloration)
-- [Metronome markings](#metronome-markings)
-- [Lyrics](#lyrics)
+- [Introduction](#introduction)
 
 ## Author
 
 - Richard Freedman (Haverford College, USA)
 
-
 ## What are MEI Tools?
 
 - [MEI Tools](https://github.com/RichardFreedman/mei_tools/blob/main/README.md) are a set of Python scripts that transform the flat MEI files produced by `sibmei` or `MuseScore` as rich MEI files.   
 - MEI Tools are modular:  various functions can be included/excluded depending on the required output. These include:
-- editing metadata
-- removing and correcting music features such as inicipts, lyrics, musica ficta, etc.
+    - editing metadata
+    - removing and correcting music features such as inicipts, lyrics, musica ficta, etc.
 - In [The Lost Voices Project](digitalduchemin.org), several related staves in flat MEI became single staves in rich MEI, using a combination of details already present in the original Sibelius file to determine the encoding.
 - In [Citations:  The Renaissance Imitation Mass (CRIM)](crimproject.org) the rich encoding is limited mainly to musica ficta, which is marked in red in the Sibelius, but massaged as <supplied> in the MEI
-
 
 ## Preparing MuseScore Editions for MEI: Engraving and "E" Files!
 
 - In this guide we describe the best practices for preparing MuseScore files for export to MEI, and subsequent processing with MEI Tools to produce rich MEI files suitable for analysis and digital editions. 
 
 
-<!-- Review these -->
-### The key steps include:
- - **initial import** from MusicXML to MuseScore
- - **apply CRIM Style Sheet** for MuseScore MEI Export (using MuseScore `Format > Style` menu; get the style sheet from this repository)
- - **add metadata**, including composer, title, and copyright information (using MuseScore `File > Project properties` menu); these will be included in the exported MEI file (which we nevertheless can curate further with MEI Tools as needed)
-    - note that the **copyright** information will display in the MuseScore notation and PDF. But in order to display the **composer** and **title**, you will need to add these as text objects in the MuseScore file (using MuseScore `Add > Text > Title` and `Add > Text > Composer` menus)
- - **rename parts** (double click on staff name in MuseScore, then select `Vocal > [appropriate voice]` from the dropdown menu and rename as needed)   
- - **update clefs** according to range of each part (using MuseScore `Palettes > Clefs` menus)
- - **remove incipit and confirm first measure** = `1`
- - **adjust durations** to match original notational values (`select all notes/rests in score`, then `Edit > copy`, then MuseScore `Edit > Paste double duration`), as needed.
-    - Note if your piece has **more than one time signature**, you will to do this in sections rather than the entire score at once.  You will need to: 
-        - 1) **count the number of measures in that section** then 
-        - 2) `select` the last bar in that section, and 
-        - 3) `add` that number of empty measures to the end of the section using MuseScore `Add > Measures > Insert after selection`.  
-        - 4) `copy` all the notes in the original section and then `Edit > paste double duration`.  
-    - Be sure to review the entire section to ensure that all durations are correct, then move on to the next step (set the time signature for that section)
- - **reset time signatures** to match actual count of notational values in each bar (`select` the given time signature, use MuseScore `Palettes > Time Signatures` menu). 
- - **hide time signatures** as needed for engraving (`right click or Alt`, then adjust `Time Signature Properties`), while retaining correct underlying time signature for MEI export
- - **correct rhythmic groupings and stem directions** as needed (`select all notes/rests in score`, then MuseScore `Tools > regroup rhythms`), as needed.
- - **review accidentals; encode musica ficta and color notes that require musica ficta** (for ficta + color: add the addicdental on the staff, then select the note and use MuseScore Plug-in `Musica_ficta_color` to color the note red and move the accidental above the staff; consider creating a custom keyboard shortcut for this plug-in)
- - **add or correct lyrics**, including second verses as needed (`select` the first note of the second verse, then MuseScore `Add > Lyrics Line 2`, then enter syllables as needed)
-- **export to MEI** using MuseScore `File > Export` menu, selecting `MEI` as the file type.  Note that we can also do this for a corpus of files with a command-line script using `mscore` (see [MuseScore Command Line Export](https://musescore.org/en/handbook/command-line-export) for details)
-- **export to PDF** for engraving using MuseScore `File > Export` menu, selecting `PDF` as the file type.  Note that we can also do this with a command-line script using `mscore` (see [MuseScore Command Line Export](https://musescore.org/en/handbook/command-line-export) for details)
-
-As a subsequent step, we will process the exported MEI files with [MEI Tools](https://github.com/RichardFreedman/mei_tools/blob/main/README.md) in order to correctly format the MEI files for analysis and digital editions.  This includes adding metadata, correcting lyrics with elisions, and encoding musica ficta as `<supplied>` elements.  
-
+### As detailed below, there are various steps that need to be taken in MuseScore to prepare a file for export to MEI.  These include:
+- adding the CRIM Style Sheet and Musica_ficta_color plug-in to your MuseScore installation
+- initial import of MusicXML to MuseScore (if you are adapting previous work)
+- apply CRIM Style Sheet
+- add metadata
+- rename parts
+- update clefs
+- adjust durations
+- reset time signatures
+- hide time signatures as needed for engraving
+- correct rhythmic groupings and stem directions
+- review accidentals; encode musica ficta and color notes that require musica ficta
+- add or correct lyrics
+- export to MEI and PDF
+- post process with MEI Tools
 
 
 ## Preparing MuseScore Editions for MEI:  One File Does It All!
@@ -83,6 +53,19 @@ As a subsequent step, we will process the exported MEI files with [MEI Tools](ht
 
 - The following sections provide more details and screenshots for the key steps mentioned above.
 
+### Adding the CRIM Style Sheet to MuseScore
+
+- You will need the `crim_2025.mss` style sheet for MuseScore; download it from the MEI Tools repository.
+- Add it to the `MuseScore 4 > Styles` folder on your machine.
+- As explained below, you can apply this to one score, or set as a default for all scores.
+
+### Adding the Musica_ficta_color Plug-in to MuseScore
+
+- You will also need the `musicaFicta_color.qnm`; download it from the MEI Tools repository.
+- Add it to the `Musescore 4 > Plugins` folder on your machine.
+- Install the `Musica_ficta_color` plug-in in MuseScore using the `Plug-in Manager` in MuseScore.
+- You can also define a keyboard short-cut that will make it easier to use.
+
 ### Importing from MusicXML to MuseScore
 
 - This is done using MuseScore `File > Open` menu, selecting the MusicXML file as the source.
@@ -90,11 +73,13 @@ As a subsequent step, we will process the exported MEI files with [MEI Tools](ht
 
 ### Applying CRIM Style Sheet for MuseScore MEI Export
 
-- Download the `CRIM Style Sheet` for MuseScore from this repository.
-- In MuseScore, use the `Format > Load Style` menu to import and apply the style sheet to your score.
-- This ensures that the engraved PDF file adheres to CRIM conventions.
+The style sheet makes sure that each file follows the same overall layout, design, and choice of fonts.
 
-Open the `Format > Load Style` menu:
+- Download the `crim_25.mss` Style Sheet for MuseScore from this repository, as explained above.
+
+You can associate this style sheet with your MuseScore files in one of two ways.  
+
+A. With a given score open, you can open `Format > Load Style` menu:
 
 <br>
 
@@ -117,6 +102,51 @@ And now 'apply' the style sheet to this score:
 > </details>
 
 <br>
+
+B. Alternatively you can set the style sheet as the default for all new MuseScore files:
+
+Set your `crim_25.mss` as the default:
+
+`MuseScore > Preferences`, then under `Import`, choose the relevant `crim_2025.mss` file from the MuseScore 4 Documents folder on your computer.
+
+Here is how do to this:
+
+Open `MuseScore > Preferences`:
+
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_prefs_1.png" alt="Style applied" />
+>
+> </details>
+
+<br>
+
+Now the `Import` dialogue: 
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_prefs_2.png" alt="Style applied" />
+>
+> </details>
+
+<br>
+
+And finally, find the `MuseScore 4 Documents` on your machine and select the `crim_2025.mss` file.
+
+
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_prefs_3.png" alt="Style applied" />
+>
+> </details>
+
+<br>
+
 
 ### Adding Metadata in MuseScore
 
@@ -215,6 +245,20 @@ Here is the second dialogue, where you can select the vocal part type:
 
 <br>
 
+## Brackets
+
+Add staff brackets to group related staves together.  This is done using the `Palettes > Brackets` menu in MuseScore.
+
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_brackets.png" />
+>
+> </details>
+
+<br>
+
 ## Clefs
 
 - Make sure the clef for each part matches the range of that part.
@@ -239,10 +283,6 @@ Now the staff is renamed:
 - MEI Tools provides module to retain or remove incipit
 - The bar numbers in the original MuseScore file determine those retained in the MEI file during sibmei export
 - For Mass movements:  use **continuous bar numbers for each movement** (Kyrie, Christe, and Kyrie should be a single file with continous bar numbers)
-
-## First + Second Endings
-
-- In MuseScore First and second endings are created with `Palettes > Repeats and Jumps`
 
 ## Adjusting Durations and Time Signatures to Match Original Notational Values
 
@@ -375,7 +415,7 @@ And now the result after resetting shapes and positions:
 
 ## Review Accidentals; Encode Musica ficta and Color Ficta Notes 
 
-Accidentals that appear in the original sources are recorded without special editorial commentary in our transcriptions.  Simply click the notehead in question and use the MuseScore `Palettes > Accidentals` menu to add the appropriate accidental, or simply use the main toolbar, as shown here:
+Accidentals that appear in the original sources are recorded without special editorial commentary in our transcriptions.  Simply **select the notehead in question** and use the MuseScore `Palettes > Accidentals` menu to add the appropriate accidental, or simply use the main toolbar, as shown here:
 
 
 <br>
@@ -388,16 +428,15 @@ Accidentals that appear in the original sources are recorded without special edi
 
 <br>
 
-But other accidentals are **editorially supplied` to indicate musica ficta.  In CRIM these are recorded in red above the staff, and are exported to MEI as `<supplied>` elements.  In order to and encode these correctly in MuseScore, we use the following procedure, which will color the effected note red and move the accidental above the staff.  MEI tools will then convert these to `<supplied>` elements in the MEI file.
+But other accidentals are **editorially supplied**.  In CRIM MuseScore and Sibelius files, these are recorded in red above the staff, and are exported to MEI as with this highlight.  MEI Tools converts all accidentals that appear in association with red notes into `<supplied>` elements in the MEI file.
 
 Here is now to do this in MuseScore:
 
-- Make sure you have added the Musica_ficta_color plug-in to MuseScore.  You can download it from th MEI Tools github repository.
+- Make sure you have added the `musicaFicta_color.qnm` to the `Plugins` folder in `MuseScore 4`, as explained above.
 
-- For each note that requires musica ficta:
-    - add the accidental on the staff using MuseScore `Palettes > Accidentals` menu or the main toolbar
-    - select the note with the accidental
-    - use MuseScore Plug-in `Musica_ficta_color` to color the note red and move the accidental above the staff
+- *For each note that requires musica ficta*:
+    - select the note and (if it's not already marked) add the accidental on the staff using MuseScore `Palettes > Accidentals` menu or the main toolbar
+    - make sure the same note is selected, and then use `Plugins > Music/arranging tools` menu to select the `musicaFicta_color` function.  This will move the accidental to show *above* the staff and simultaneously color the given note red (if still selected it will appear to be blue, but click away to see the red highlight)
     - consider creating a custom keyboard shortcut for this plug-in to speed up the process.
 
 The process will look like this:
@@ -406,7 +445,7 @@ The process will look like this:
 
 > <details>
 > <summary>Show Image</summary>
-> <img src="images/ms_accid_2.png" alt="Final Composer and Title" />
+> <img src="images/ms_accid_2.png" alt="" />
 >
 > </details>
 
@@ -418,7 +457,7 @@ And the result like this:
 
 > <details>
 > <summary>Show Image</summary>
-> <img src="images/ms_accid_3.png" alt="Final Composer and Title" />
+> <img src="images/ms_accid_3.png" alt="" />
 >
 > </details>
 
@@ -435,13 +474,81 @@ Carefully add lyrics to the score using MuseScore `Add > Text > Lyrics` menu.
 
 CRIM editions follow standard editorial practice for Renaissance music: 
 
+- Phrases proceed syllabically, saving extra notes for the penultimate syllable of the line. The last note of each phrase normally receives the last syllable of the poetic line.
+- Repeated pitches normally imply a change of syllable, since to do otherwise would result in awkward vocal articulations.
+- Semi-minims rarely receive their own syllable. The major exception to this guideline is the first note of a melismatic line of short notes (semi-minims), which often is marked with a new syllable. Otherwise the next syllable after that is reserved for the note _after_ the minim that follows this series. Thus the first minim after a series of short notes does not normally get a new syllable, nor should the intervening short notes. Except in pieces with a great deal of nonsense syllables or other declamatory gestures, singers were advised against putting a new syllable on each of a series of notes less than a semi-minim.
+- Syncopations and melodic leaps are often good places to change syllables, particularly in long phrases.
+
+**Elisions** (for instance between `ky-ri-e_e-le-i_son`) need to be treated with care.  It is possible to create a curved elision mark with MuseScore, but there are some problems with the alternatives:
+
+Method 1: after the first syllable, you can press `CMD + OPT + '-'` (MacOS) or `CTRL + ALT + '-'` (Windows), then type the second syllable for the given note.  This results in the two syllables beneath the same note, separated by a blank space.  The MEI export direct from MuseScore nevertheless connects the two syllables with a small curve when rendered in Verovio, but the PDF does not!
+
+The resulting PDF:
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_elision_1.png" alt="" />
+>
+> </details>
+
+<br>
 
 
-- Be sure to encode second verse (if required) as “lyrics line 2”. If both sets of lyrics are encoded as Lyric 1, they will collide in meiView. (The results of sibmei and MEIMassaging will nevertheless be valid.)
-- Be sure that each syllable is attached to a note (and never to a rest or barline). Syllables attached to rests or barlines will produce invalid MEI files after sibmei.
-- Elisions (for instance between `ky-ri-e_e-le-i_son`) will be engraved by Sibelius with a small curving line.  Sib MEI exports these in a way that creates TWO syllables for a given note.  We correct these with MEI Tools to display as two syllables connected by an underscore (`_`)
+The resulting MEI in Verovio:
+<br>
 
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_elision_3.png" alt="" />
+>
+> </details>
+
+<br>
+
+
+Method 2:  after typing the first syllable, then `Right Click` to reveal the text edit dialogue, and select `Edit element`.  From here select `Add Symbols` dialogue and look for the small curving connector, which will be added to the score before the next syllable.  Here we see the opposite of the situation noted above:  the PDF has the curved connector, but the MEI displays things incorrectly.
+
+The resulting PDF:
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_elision_2.png" alt="" />
+>
+> </details>
+
+<br>
+
+The resulting MEI in Verovio:
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_elision_4.png" alt="" />
+>
+> </details>
+
+<br>
 <!-- get image for lyrics -->
+
+## First + Second Endings
+
+- In MuseScore First and second endings are created with `Palettes > Repeats and Jumps`
+
+
+
+
+## Ligatures + Coloration
+
+CRIM editions do not use ligatures or coloration.  MuseScore does not support such brackets.
+
+    
+##  Metronome markings
+
+- They are not used in CRIM editions. Delete them from any MuseScore file before export to PDF.
+- We also check for and remove these from MEI files.
+
 
 ## MuseScore to MEI and PDF
 
@@ -449,38 +556,5 @@ CRIM editions follow standard editorial practice for Renaissance music:
 <!-- get image for MEI and PDF export -->
 
 
-## Final longa
-
-- In CRIM the final tone is entered in Sibelius as a longa (via the keypad).
-- The extra line to create the longa is added as a symbol (line) for purposes of engraving. It does not export to MEI.
-- In Du Chemin:  MEIMassaging converts final breve to final longa for purposes of the master MEI file.
-- meiView nevertheless renders this as a breve in the present development.
-
-<!-- check this and get image if needed -->
-
-- sibmei export produces breve: `<note dur="breve" oct="3" pname="d" >`
-
-- MEIMassaging produces longa: `<note oct="3" pname="d" dur="long">`
-
-![Final Longa](images/image_14.png)
-
-
-
-
-## Ligatures + Coloration
-
-- Brackets used to indicate ligatures or coloration for engraved version are exported to MEI as annotations <annot>.
-- These can be preserved or removed as with MEI Tools
-- They are not supported in the current Verovio development
-
-
-
-## Delete Metronome markings
-
-- delete them (but they are not displayed in Verovio)
-
-
-![Metronome Markings](images/image_17.png)
-
-
-
+- **export to MEI** using MuseScore `File > Export` menu, selecting `MEI` as the file type.  Note that we can also do this for a corpus of files with a command-line script using `mscore` (see [MuseScore Command Line Export](https://musescore.org/en/handbook/command-line-export) for details)
+- **export to PDF** for engraving using MuseScore `File > Export` menu, selecting `PDF` as the file type.  Note that we can also do this with a command-line script using `mscore` (see [MuseScore Command Line Export](https://musescore.org/en/handbook/command-line-export) for details)
