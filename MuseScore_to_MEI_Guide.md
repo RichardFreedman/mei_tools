@@ -541,7 +541,7 @@ The resulting MEI in Verovio:
 
 ## Ligatures + Coloration
 
-- CRIM editions do not use ligatures or coloration.  MuseScore does not support such brackets.
+- CRIM editions do not use ligatures or coloration.  But if you would like to use them as part of engraving, you can see the `Palettes` menu, then add `Lines`.  Select the notes you want to mark in this way, then select the appropriate line.  It can be moved on the score as needed.
 
     
 ##  Metronome markings
