@@ -17,16 +17,17 @@ Last Update:  December 2025
 6. [Adding Metadata in MuseScore](#adding-metadata-in-musescore)
 7. [Staves](#staves)
 8. [Brackets](#brackets)
-9. [Clefs](#clefs)
-10. [Incipits + Measure Numbers](#incipits-measure-numbers)
-11. [Adjusting Durations and Time Signatures to Match Original Notational Values](#adjusting-durations-and-time-signatures-to-match-original-notational-values)
-12. [Reset Rhythmic Groupings and Stem Directions as Needed](#reset-rhythmic-groupings-and-stem-directions-as-needed)
-13. [Review Accidentals; Encode Musica ficta and Color Ficta Notes](#review-accidentals-encode-musica-ficta-and-color-ficta-notes)
-14. [Add or Correct Lyrics](#add-or-correct-lyrics)
-15. [First + Second Endings](#first-second-endings)
-16. [Ligatures + Coloration](#ligatures-coloration)
-17. [Metronome markings](#metronome-markings)
-18. [MuseScore to MEI and PDF](#musescore-to-mei-and-pdf)
+9. [Transpose](#transpose)
+10. [Clefs](#clefs)
+11. [Incipits + Measure Numbers](#incipits-measure-numbers)
+12. [Adjusting Durations and Time Signatures to Match Original Notational Values](#adjusting-durations-and-time-signatures-to-match-original-notational-values)
+13. [Reset Rhythmic Groupings and Stem Directions as Needed](#reset-rhythmic-groupings-and-stem-directions-as-needed)
+14. [Review Accidentals; Encode Musica ficta and Color Ficta Notes](#review-accidentals-encode-musica-ficta-and-color-ficta-notes)
+15. [Add or Correct Lyrics](#add-or-correct-lyrics)
+16. [First + Second Endings](#first-second-endings)
+17. [Ligatures + Coloration](#ligatures-coloration)
+18. [Metronome markings](#metronome-markings)
+19. [MuseScore to MEI and PDF](#musescore-to-mei-and-pdf)
 
 ## Author
 
@@ -279,6 +280,35 @@ Add staff brackets to group related staves together.  This is done using the `Pa
 
 <br>
 
+## Transpose
+
+Some of our 'borrowed' MusicXML or other editions have been transposed for the convenience of modern performers.  Fortunately MuseScore provides a relatively simple way to correct this:
+
+Select all notes in the piece, then follow `Tools > Transpose` and select an appropriate interval and method to put things in line with original sources.
+
+The transposition tool is here:
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_transpose_1.png" alt="Final Composer and Title" />
+>
+> </details>
+
+<br>
+
+<br>
+
+
+And the transposition dialogue looks like this: 
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_transpose_2.png" alt="Final Composer and Title" />
+>
+> </details>
+
+<br>
+
 ## Clefs
 
 - Make sure the clef for each part matches the range of that part.
@@ -447,6 +477,8 @@ Select all notes in the piece (or section, if you prefer), then use `Tools > Reg
 > </details>
 
 <br>
+
+
 
 ## Review Accidentals; Encode Musica ficta and Color Ficta Notes 
 
