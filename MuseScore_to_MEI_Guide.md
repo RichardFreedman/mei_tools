@@ -8,11 +8,34 @@ Last Update:  December 2025
 - [MuseScore Handbook](https://handbook.musescore.org/)
 
 ## Table of Contents
-- [Introduction](#introduction)
+
+1. [Introduction](#introduction)
+2. [Adding the CRIM Style Sheet to MuseScore](#adding-the-crim-style-sheet-to-musescore)
+3. [Adding the Musica Ficta + Color Plug-in to MuseScore](#adding-the-musica-ficta-color-plug-in-to-musescore)
+4. [Importing from MusicXML to MuseScore](#importing-from-musicxml-to-musescore)
+5. [Applying CRIM Style Sheet for MuseScore MEI Export](#applying-crim-style-sheet-for-musescore-mei-export)
+6. [Adding Metadata in MuseScore](#adding-metadata-in-musescore)
+7. [Staves](#staves)
+8. [Brackets](#brackets)
+9. [Clefs](#clefs)
+10. [Incipits + Measure Numbers](#incipits-measure-numbers)
+11. [Adjusting Durations and Time Signatures to Match Original Notational Values](#adjusting-durations-and-time-signatures-to-match-original-notational-values)
+12. [Reset Rhythmic Groupings and Stem Directions as Needed](#reset-rhythmic-groupings-and-stem-directions-as-needed)
+13. [Review Accidentals; Encode Musica ficta and Color Ficta Notes](#review-accidentals-encode-musica-ficta-and-color-ficta-notes)
+14. [Add or Correct Lyrics](#add-or-correct-lyrics)
+15. [First + Second Endings](#first-second-endings)
+16. [Ligatures + Coloration](#ligatures-coloration)
+17. [Metronome markings](#metronome-markings)
+18. [MuseScore to MEI and PDF](#musescore-to-mei-and-pdf)
 
 ## Author
 
 - Richard Freedman (Haverford College, USA)
+
+
+## Introduction
+
+- In this guide we describe the best practices for preparing MuseScore files for export to MEI, and subsequent processing with MEI Tools to produce rich MEI files suitable for analysis and digital editions. 
 
 ## What are MEI Tools?
 
@@ -23,12 +46,9 @@ Last Update:  December 2025
 - In [The Lost Voices Project](digitalduchemin.org), several related staves in flat MEI became single staves in rich MEI, using a combination of details already present in the original Sibelius file to determine the encoding.
 - In [Citations:  The Renaissance Imitation Mass (CRIM)](crimproject.org) the rich encoding is limited mainly to musica ficta, which is marked in red in the Sibelius, but massaged as <supplied> in the MEI
 
-## Preparing MuseScore Editions for MEI: Engraving and "E" Files!
 
-- In this guide we describe the best practices for preparing MuseScore files for export to MEI, and subsequent processing with MEI Tools to produce rich MEI files suitable for analysis and digital editions. 
+## MuseScore for MEI Key Steps 
 
-
-### As detailed below, there are various steps that need to be taken in MuseScore to prepare a file for export to MEI.  These include:
 - adding the CRIM Style Sheet and Musica_ficta_color plug-in to your MuseScore installation
 - initial import of MusicXML to MuseScore (if you are adapting previous work)
 - apply CRIM Style Sheet
@@ -45,7 +65,7 @@ Last Update:  December 2025
 - post process with MEI Tools
 
 
-## Preparing MuseScore Editions for MEI:  One File Does It All!
+## One File Does It All
 
 - Unlike the process for Sibelius files, MuseScore does not require separate "E" files for MEI export.  The same MuseScore file can be used both for engraving (PDF export) and for MEI export.
 
@@ -59,7 +79,7 @@ Last Update:  December 2025
 - Add it to the `MuseScore 4 > Styles` folder on your machine.
 - As explained below, you can apply this to one score, or set as a default for all scores.
 
-### Adding the Musica_ficta_color Plug-in to MuseScore
+### Adding the Musica Ficta + Color Plug-in to MuseScore
 
 - You will also need the `musicaFicta_color.qnm`; download it from the MEI Tools repository.
 - Add it to the `Musescore 4 > Plugins` folder on your machine.
@@ -117,7 +137,7 @@ Open `MuseScore > Preferences`:
 
 > <details>
 > <summary>Show Image</summary>
-> <img src="images/ms_prefs_1.png" alt="Style applied" />
+> <img src="images/ms_prefs1.png" alt="Style applied" />
 >
 > </details>
 
@@ -554,3 +574,10 @@ The resulting MEI in Verovio:
 
 - **export to MEI** using MuseScore `File > Export` menu, selecting `MEI` as the file type.  Note that we can also do this for a corpus of files with a command-line script using `mscore` (see [MuseScore Command Line Export](https://musescore.org/en/handbook/command-line-export) for details)
 - **export to PDF** for engraving using MuseScore `File > Export` menu, selecting `PDF` as the file type.  Note that we can also do this with a command-line script using `mscore` (see [MuseScore Command Line Export](https://musescore.org/en/handbook/command-line-export) for details)
+
+
+## Credits and License
+
+This guide written by Richard Freedman (Haverford College, USA)
+
+This work is licensed under CC BY-NC-SA 4.0
