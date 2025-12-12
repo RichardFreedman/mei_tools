@@ -398,11 +398,11 @@ The final result will look like this in the engraved PDF:
 </br>
 
 
-### Reset Rhythmic Groupings and Stem Directions as Needed
+### Reset Stem Directions as Needed
 
 
 
-MuseScore provides a tool to reset rhythmic groupings and stem directions after adjusting durations.  Tied notes within a bar will be grouped together (as longer values or dotted notes), and stem directions will be set according to standard engraving conventions.
+MuseScore provides a tool to reset stem directions after adjusting durations and clefs.  Stem directions will be set according to standard engraving conventions.
 
 To do this in MuseScore:
 - `select all notes/rests in score` (Ctrl + A or Cmd + A)
@@ -432,6 +432,21 @@ And now the result after resetting shapes and positions:
 
 <br>
 
+### Reset Rhythmic Groupings (Ties)
+
+You might also notice that some notes are tied within a bar, rather than notated as dotted notes.  This is especially true after doubling note values!  Here is now to fix this quickly:
+
+Select all notes in the piece (or section, if you prefer), then use `Tools > Regroup Rhythms` as shown below.  Now all the ties within bars should be resolved as dotted notes.
+
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_ties.png" alt="Final Composer and Title" />
+>
+> </details>
+
+<br>
 
 ## Review Accidentals; Encode Musica ficta and Color Ficta Notes 
 
