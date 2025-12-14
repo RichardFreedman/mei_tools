@@ -548,7 +548,48 @@ CRIM editions follow standard editorial practice for Renaissance music:
 
 **Elisions** (for instance between `ky-ri-e_e-le-i_son`) need to be treated with care.  It is possible to create a curved elision mark with MuseScore, but there are some problems with the alternatives:
 
-Method 1: after the first syllable, you can press `CMD + OPT + '-'` (MacOS) or `CTRL + ALT + '-'` (Windows), then type the second syllable for the given note.  This results in the two syllables beneath the same note, separated by a blank space.  The MEI export direct from MuseScore nevertheless connects the two syllables with a small curve when rendered in Verovio, but the PDF does not!
+**Preferred method for elisions in MuseScore:** 
+
+1) with the text entry box active for the given note, type the first syllable that will be elided
+2) while still in the same lyric text box, `Right Click` to reveal the text edit dialogue, and select `Add Symbols`.
+3) select the small curving connector (which is found just after the various fraction symbols in the chart), which will be added to the score before the next syllable.  
+4) type the second syllable, 
+5) type dash or space to move to the text box for the next note.
+
+The resulting PDF will show the elision correctly.  For MEI and display with Verovio you will need to post-process the MEI file with MEI Tools to ensure that the elision is correctly recorded in the MEI file.
+
+
+The steps look like this in MuseScore:
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_elision_a.png" alt="" />
+>
+> </details>
+
+<br>
+
+The resulting MEI in Verovio:
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_elision_4.png" alt="" />
+>
+> </details>
+
+<br>
+
+
+Another method for elisions in MuseScore:  In this case the MEI (and thus Verovio) are correct.  But the PDF has no elision! 
+
+Also note that this method will *not* work correctly with CRIM Intervals, since in this case the MEI encodes a single note with two syllables, which CRIM Intervals cannot interpret correctly.
+
+1) after the first syllable, you can press `CMD + OPT + '-'` (MacOS) or `CTRL + ALT + '-'` (Windows), 
+2) now type the second syllable for the given note.  
+
+This results in the two syllables beneath the same note, separated by a blank space.  The MEI export direct from MuseScore nevertheless connects the two syllables with a small curve when rendered in Verovio, but the PDF does not!
 
 The resulting PDF:
 <br>
@@ -574,30 +615,6 @@ The resulting MEI in Verovio:
 <br>
 
 
-Method 2:  after typing the first syllable, then `Right Click` to reveal the text edit dialogue, and select `Edit element`.  From here select `Add Symbols` dialogue and look for the small curving connector, which will be added to the score before the next syllable.  Here we see the opposite of the situation noted above:  the PDF has the curved connector, but the MEI displays things incorrectly.
-
-The resulting PDF:
-<br>
-
-> <details>
-> <summary>Show Image</summary>
-> <img src="images/ms_elision_2.png" alt="" />
->
-> </details>
-
-<br>
-
-The resulting MEI in Verovio:
-<br>
-
-> <details>
-> <summary>Show Image</summary>
-> <img src="images/ms_elision_4.png" alt="" />
->
-> </details>
-
-<br>
-<!-- get image for lyrics -->
 
 ## First + Second Endings
 

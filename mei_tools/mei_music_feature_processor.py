@@ -109,7 +109,6 @@ class MEI_Music_Feature_Processor:
                         measure.set('label', new_number)
                     
         # page break removal
-        # pb removal
         if remove_pb:
             # Find pb elements
             pb_elements = root.findall('.//mei:pb', namespaces=ns)
@@ -118,7 +117,7 @@ class MEI_Music_Feature_Processor:
             for pb in pb_elements:
                 pb.getparent().remove(pb)
             
-        # sb removal
+        # section break removal
         if remove_sb:
             # Find sb elements
             sb_elements = root.findall('.//mei:sb', namespaces=ns)
@@ -144,7 +143,7 @@ class MEI_Music_Feature_Processor:
             for dir in dir_elements:
                 dir.getparent().remove(dir)
 
-        # ligature brackets
+        # remove ligature brackets
         if remove_ligature_bracket:
             # Find pb elements
             bracket_elements = root.findall('.//mei:bracketSpan', namespaces=ns)
@@ -153,7 +152,7 @@ class MEI_Music_Feature_Processor:
             for bracket in bracket_elements:
                 bracket.getparent().remove(bracket)
         
-        # variants
+        # remove variants
         if remove_variants:
             # Find all app elements (variant apparatus)
             apps = root.findall('.//mei:app', namespaces=ns)
@@ -326,7 +325,6 @@ class MEI_Music_Feature_Processor:
             print(f"Found {len(measures_to_process)} 3/1 measures check for mRests.")
             
             # Process each identified measure
-            
             for measure_id in measures_to_process:
                 # Find the measure by ID
                 measure = root.find(f'.//mei:measure[@xml:id="{measure_id}"]', namespaces=ns)
@@ -405,7 +403,7 @@ class MEI_Music_Feature_Processor:
                 parent = chord.getparent()
                 parent.remove(chord)
 
-        # Remove chord elements
+        # check for chord elements
         if check_for_chords:
             chords = root.findall('.//mei:chord', namespaces=ns)
             count = len(chords)
@@ -415,7 +413,7 @@ class MEI_Music_Feature_Processor:
 
                 print(f"Chord element found in measure {measure_number}" )
         
-        # Remove Senfl brackets
+        # Remove Senfl edition brackets
         if remove_senfl_bracket:
             brackets = root.findall('.//mei:line[@type="bracket"]', namespaces=ns)
             count = len(brackets)
@@ -455,7 +453,7 @@ class MEI_Music_Feature_Processor:
                 parent = verse.getparent()
                 parent.remove(verse)
         
-        # Fix elisions
+        # fix elisions
         if fix_elisions:
             verses = root.findall('.//mei:verse', namespaces=ns)
             for verse in verses:
@@ -487,7 +485,7 @@ class MEI_Music_Feature_Processor:
                     parent = syllables[1].getparent()
                     parent.remove(syllables[1])
 
-        # Fix elisions in musescore mei
+        # fix musescore elisions 
         if fix_musescore_elisions:
             syllables = root.xpath('.//mei:syl', namespaces=ns)
             # check for syllables with con="b" (which are the elided ones)
@@ -551,7 +549,7 @@ class MEI_Music_Feature_Processor:
                                 # Remove the empty layer
                                 layer.getparent().remove(layer)
                             
-        # correcting ficta as supplied
+        # correct red accidental notes as supplied
         if correct_ficta:
             # remove 'dir' tags - try both with and without namespace
             dir_tags = root.findall('.//dir', namespaces=ns) + root.findall('.//mei:dir', namespaces=ns)

@@ -230,6 +230,7 @@ for mei_path in mei_paths:
                                                   remove_empty_verse=False,
                                                   remove_lyrics=False,
                                                   fix_elisions=True,
+                                                  fix_musescore_elisions=False,
                                                   slur_to_tie=True,
                                                   collapse_layers=False,
                                                   correct_ficta=True,
@@ -247,8 +248,13 @@ Note:  We can easily add more modules based on your experience with particular M
 
 #### fix_elisions
 
-Fix syllable elisions in the MEI files.  When exported from Sibelius the elisions results in two syllable elements per note.  This module finds the double syllable notes, then reformats the two syllables as a single
-tag for that note.  The two syllables are connected with an underscore, which renders correctly in Verovio, and is valid MEI.
+Fix syllable elisions in the MEI files from Sibelius.  When exported from Sibelius the elisions result in two syllable elements per note.  This module finds the double syllable notes, then reformats the two syllables as a single tag for that note.  The two syllables are connected with an underscore, which renders correctly in Verovio, and is valid MEI.
+
+---
+
+#### fix_musescore_elisions
+
+Fix syllable elisions in the MEI files from MuseScore.  When exported from MuseScore the elision are encoded incorrectly:  with a unicode character to represent the elision, but some incorrect `wordpos` and `con` attributes both for the given note and the one before it.  This module corrects the encoding.
 
 ---
 
