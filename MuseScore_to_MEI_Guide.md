@@ -570,12 +570,12 @@ The steps look like this in MuseScore:
 
 <br>
 
-The resulting MEI in Verovio:
+The resulting MEI in Verovio after processing with MEI Tools:
 <br>
 
 > <details>
 > <summary>Show Image</summary>
-> <img src="images/ms_elision_4.png" alt="" />
+> <img src="images/ms_elision_3.png" alt="" />
 >
 > </details>
 
