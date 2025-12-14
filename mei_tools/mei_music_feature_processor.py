@@ -30,6 +30,7 @@ class MEI_Music_Feature_Processor:
                                remove_empty_verse=False,
                                remove_lyrics=False,
                                fix_elisions=True,
+                               fix_musescore_elisions=True,
                                slur_to_tie=True,
                                collapse_layers=False,
                                correct_ficta=True,
@@ -81,7 +82,7 @@ class MEI_Music_Feature_Processor:
         }
 
         # inicipt removal
-        if remove_incipit == True:
+        if remove_incipit:
             # Find measure with label="0" and n="1"
             incipit_xpath = '//mei:measure[@label="0"][@n="1"]'
             measures = root.xpath(incipit_xpath, namespaces=ns)
@@ -109,7 +110,7 @@ class MEI_Music_Feature_Processor:
                     
         # page break removal
         # pb removal
-        if remove_pb == True:
+        if remove_pb:
             # Find pb elements
             pb_elements = root.findall('.//mei:pb', namespaces=ns)
             count = len(pb_elements)
@@ -118,7 +119,7 @@ class MEI_Music_Feature_Processor:
                 pb.getparent().remove(pb)
             
         # sb removal
-        if remove_sb == True:
+        if remove_sb:
             # Find sb elements
             sb_elements = root.findall('.//mei:sb', namespaces=ns)
             count = len(sb_elements)
@@ -127,7 +128,7 @@ class MEI_Music_Feature_Processor:
                 sb.getparent().remove(sb)
               
         # remove annotation
-        if remove_annotation == True:
+        if remove_annotation:
             annotations = root.findall('.//mei:annot', namespaces=ns)
             count = len(annotations)
             print(f"Found {count} annotations to remove.")
@@ -135,7 +136,7 @@ class MEI_Music_Feature_Processor:
                 annotation.getparent().remove(annotation)
 
         # dir elements, which are like annotations
-        if remove_dir == True:
+        if remove_dir:
             # Find pb elements
             dir_elements = root.findall('.//mei:dir', namespaces=ns)
             count = len(dir_elements)
@@ -144,7 +145,7 @@ class MEI_Music_Feature_Processor:
                 dir.getparent().remove(dir)
 
         # ligature brackets
-        if remove_ligature_bracket == True:
+        if remove_ligature_bracket:
             # Find pb elements
             bracket_elements = root.findall('.//mei:bracketSpan', namespaces=ns)
             count = len(bracket_elements)
@@ -153,7 +154,7 @@ class MEI_Music_Feature_Processor:
                 bracket.getparent().remove(bracket)
         
         # variants
-        if remove_variants == True:
+        if remove_variants:
             # Find all app elements (variant apparatus)
             apps = root.findall('.//mei:app', namespaces=ns)
             count = len(apps)
@@ -186,7 +187,7 @@ class MEI_Music_Feature_Processor:
                 app_parent_layer.remove(app)
         
         # remove anchored text tags
-        if remove_anchored_text == True:
+        if remove_anchored_text:
             # find all anchored
             anchored = root.findall('.//mei:anchoredText', namespaces=ns)
 
@@ -199,7 +200,7 @@ class MEI_Music_Feature_Processor:
                     print("Anchored text removed successfully!")
             
         # remove timestamp and velocity
-        if remove_timestamp == True:
+        if remove_timestamp:
             # for notes
             print('Checking and Removing timestamp.')
             notes = root.findall('.//mei:note', namespaces=ns)
@@ -236,7 +237,7 @@ class MEI_Music_Feature_Processor:
                     del tie.attrib['tstamp2']    
         
         # add time signature information to all scoreDefs (for CMME and JRP)
-        if correct_cmme_time_signatures == True:
+        if correct_cmme_time_signatures:
             score_defs = root.findall('.//mei:scoreDef', namespaces=ns)
             count = len(score_defs)
             print(f"Found {count} scoreDef elements to process.")
@@ -262,7 +263,7 @@ class MEI_Music_Feature_Processor:
                             staff_def.attrib.pop('meter.unit', None)
         
         # add time signature information to scoreDef for JRP meterSig codings
-        if correct_jrp_time_signatures == True:
+        if correct_jrp_time_signatures:
             score_defs = root.findall('.//mei:scoreDef', namespaces=ns)
             count = len(score_defs)
             print(f"Found {count} scoreDef elements to process.")
@@ -282,7 +283,7 @@ class MEI_Music_Feature_Processor:
                         score_def.set('meter.unit', meter_unit)
                                      
         # fix mrests under 3/1
-        if correct_mrests == True:
+        if correct_mrests:
             # First pass: identify which measures should be processed
             # Build a parent map for efficient parent lookup
             parent_map = {c: p for p in root.iter() for c in p}
@@ -395,7 +396,7 @@ class MEI_Music_Feature_Processor:
             print(f"Corrected {mRest_counter} mRests")
     
         #  Remove chord elements
-        if remove_chord == True:
+        if remove_chord:
             chords = root.findall('.//mei:chord', namespaces=ns)
             count = len(chords)
             print(f"Found {count} chord elements to remove.")
@@ -405,7 +406,7 @@ class MEI_Music_Feature_Processor:
                 parent.remove(chord)
 
         # Remove chord elements
-        if check_for_chords == True:
+        if check_for_chords:
             chords = root.findall('.//mei:chord', namespaces=ns)
             count = len(chords)
             for chord in chords:
@@ -415,7 +416,7 @@ class MEI_Music_Feature_Processor:
                 print(f"Chord element found in measure {measure_number}" )
         
         # Remove Senfl brackets
-        if remove_senfl_bracket == True:
+        if remove_senfl_bracket:
             brackets = root.findall('.//mei:line[@type="bracket"]', namespaces=ns)
             count = len(brackets)
             print(f"Found {count} bracket elements to remove.")
@@ -424,7 +425,7 @@ class MEI_Music_Feature_Processor:
                 parent.remove(bracket)
         
         # Remove empty verse elements
-        if remove_empty_verse == True:
+        if remove_empty_verse:
             if remove_empty_verse:
                 # Find all parent elements that might contain verses
                 for parent in root.findall('.//mei:syllable', namespaces=ns):
@@ -446,7 +447,7 @@ class MEI_Music_Feature_Processor:
                             parent.append(verse)
         
         # Remove all lyrics
-        if remove_lyrics == True:
+        if remove_lyrics:
             verses = root.findall('.//mei:verse', namespaces=ns)
             count = len(verses)
             print(f"Found {count} lyric elements to remove.")
@@ -455,7 +456,7 @@ class MEI_Music_Feature_Processor:
                 parent.remove(verse)
         
         # Fix elisions
-        if fix_elisions == True:
+        if fix_elisions:
             verses = root.findall('.//mei:verse', namespaces=ns)
             for verse in verses:
                 # Set all v numbers to 1
@@ -485,9 +486,42 @@ class MEI_Music_Feature_Processor:
                     # Remove the second syllable
                     parent = syllables[1].getparent()
                     parent.remove(syllables[1])
+
+        # Fix elisions in musescore mei
+        if fix_musescore_elisions:
+            syllables = root.xpath('.//mei:syl', namespaces=ns)
+            # check for syllables with con="b" (which are the elided ones)
+            sylls_to_fix = [syl for syl in syllables if syl.get('con') == 'b'] 
+            print(f"Found {len(sylls_to_fix)} elided syllables to correct in Musescore MEI.")
+            # change con="b" to con="d" and wordpos="m" so the first syllable is correct
+            for syllable in syllables:
+                if syllable.get('con') == 'b':
+                    syllable.set('con', 'd')
+                    syllable.set('wordpos', 'm')
+                    
+                    # Now modify the next syllable to add underscore after first character, via parent layer
+                    current_layers = syllable.xpath('ancestor::mei:layer', namespaces=ns)
+                    if current_layers:
+                        current_layer = current_layers[0]
+                        all_syllables = current_layer.xpath('.//mei:syl', namespaces=ns)
+                        
+                        try:
+                            current_index = all_syllables.index(syllable)
+                            if current_index < len(all_syllables) - 1:
+                                # here is the _next syllable_, which is the one with the real elision
+                                next_syl = all_syllables[current_index + 1]
+                                if next_syl.text and len(next_syl.text) > 1:
+                                    original = next_syl.text
+                                    # replace the combining breve if present (which is \u035c) with underscore
+                                    next_syl.text = next_syl.text.replace("\u035c", "_") 
+                                    print(f"Modified: '{original}' → '{next_syl.text}'")
+                        except (ValueError, IndexError) as e:
+                            print(f"Warning: Could not process syllable index: {e}")
+                    else:
+                        print(f"Warning: No layer ancestor found for syllable {syllable.get('xml:id')}")
         
         # Replace slurs with ties
-        if slur_to_tie == True:
+        if slur_to_tie:
             slurs = root.findall('.//mei:slur', namespaces=ns)
             count = len(slurs)
             print(f"Found {count} slurs to correct as ties.")
@@ -501,7 +535,7 @@ class MEI_Music_Feature_Processor:
                 slur.tag = f"{{{ns['mei']}}}tie"
 
         #  combine layers
-        if collapse_layers == True:
+        if collapse_layers:
 
             staves = root.findall('.//mei:staff', namespaces=ns)
             for staff in staves:
@@ -518,7 +552,7 @@ class MEI_Music_Feature_Processor:
                                 layer.getparent().remove(layer)
                             
         # correcting ficta as supplied
-        if correct_ficta == True:
+        if correct_ficta:
             # remove 'dir' tags - try both with and without namespace
             dir_tags = root.findall('.//dir', namespaces=ns) + root.findall('.//mei:dir', namespaces=ns)
             print(f"Found {len(dir_tags)} dir tags to remove")
@@ -584,7 +618,7 @@ class MEI_Music_Feature_Processor:
                         # print("updated note with new supplied accidental")
                         
         # fix voice labels
-        if voice_labels == True:
+        if voice_labels:
             # revert staffDef/label to staffDef/@label
             staffDefs = root.findall('.//mei:staffDef', namespaces=ns)
             count = len(staffDefs)
