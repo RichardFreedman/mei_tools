@@ -69,7 +69,6 @@ class MEI_Metadata_Updater:
         ns = {'mei': 'http://www.music-encoding.org/ns/mei'}
 
         # new ID removal 
-        
         def remove_ids_from_head_children(element):
             # Remove xml:id if present
             attrib_key = "{http://www.w3.org/XML/1998/namespace}id"
@@ -79,59 +78,64 @@ class MEI_Metadata_Updater:
             # Recursively process children
             for child in element:
                 remove_ids_from_head_children(child)
-        
-        # already doing this in the music feature tool with optional module
-        # Revert staffDef/label to staffDef/@label
-        # staffDefs = root.findall('.//mei:staffDef', namespaces=ns)
-        # for staffDef in staffDefs:
-        #     label = staffDef.find('mei:label', namespaces=ns)
-        #     if label is not None and label.text:
-        #         staffDef.set('label', label.text)
-        
+
         # work on fileDesc
         head_el = root.find('mei:meiHead', namespaces=ns)
         fileDesc_el = head_el.find('mei:fileDesc', namespaces=ns)
         
-        # title
+        # titleStmt
         titleStmt_el = fileDesc_el.find('mei:titleStmt', namespaces=ns)
-        titleStmt_el.clear()
-        title_el = etree.SubElement(titleStmt_el, 'title')
-        title_el.text = matching_dict['Title']
+        if titleStmt_el is None:
+            titleStmt_el = etree.SubElement(fileDesc_el, 'titleStmt')
+        
+        # Add title
+        title = etree.SubElement(titleStmt_el, 'title')
+        title.set('type', 'main')
+        title.text = matching_dict['Title']
         
         respStmt_el = etree.SubElement(titleStmt_el, 'respStmt')
         
         # composer
-        composer_el = etree.Element('persName', {
-            'role': 'composer',
-            'auth': 'VIAF',
-            'auth.uri': matching_dict['Composer_VIAF']
-        })
-        composer_el.text = matching_dict['Composer_Name']
-        respStmt_el.append(composer_el)
+        composer = respStmt_el.find('mei:persName', namespaces=ns)
+        if composer is None:
+            composer = etree.SubElement(respStmt_el, 'persName')
+        composer.set('role', 'composer')
+        composer.set('auth', 'VIAF')
+        composer.set('auth.uri', matching_dict['Composer_VIAF'])
+        composer.text = matching_dict['Composer_Name']
         
         # editors
         editors = matching_dict['Editor'].split('|')
         for editor in editors:
-            etree.SubElement(respStmt_el, 'persName', {
-                'role': 'editor'
-            }).text = editor.strip()
-        
+            editor_elem = respStmt_el.find('mei:persName', namespaces=ns)
+            if editor_elem is None:
+                editor_elem = etree.SubElement(respStmt_el, 'persName')
+            editor_elem.set('role', 'editor')
+            editor_elem.text = editor.strip()
+
         # pubStmt
         pubStmt_el = fileDesc_el.find('mei:pubStmt', namespaces=ns)
-        pubStmt_el.clear()
-        pubStmt_el.append(etree.fromstring("""<publisher>Citations: The Renaissance Imitation Mass Project  https://crimproject.org</publisher>"""))
+        if pubStmt_el is None:
+            pubStmt_el = etree.SubElement(fileDesc_el, 'pubStmt')
+        
+        # Add publication information
+        publisher = etree.SubElement(pubStmt_el, 'publisher')
+        publisher.text = 'Citations: The Renaissance Imitation Mass Project  https://crimproject.org'
         
         for distributor in matching_dict['Copyright_Owner'].split('|'):
-            pubStmt_el.append(etree.fromstring(f'<distributor>{distributor}</distributor>'))
+            distributor_elem = etree.SubElement(pubStmt_el, 'distributor')
+            distributor_elem.text = distributor
         
         current_date = datetime.now().isoformat()
-        pubStmt_el.append(etree.fromstring(f'<date isodate="{current_date}"/>'))
-        pubStmt_el.append(etree.fromstring(f'<availability>{matching_dict["Rights_Statement"]}</availability>'))
+        date_elem = etree.SubElement(pubStmt_el, 'date')
+        date_elem.set('isodate', current_date)
         
+        availability_elem = etree.SubElement(pubStmt_el, 'availability')
+        availability_elem.text = matching_dict["Rights_Statement"]
+
         # appInfo
         appInfo_el = head_el.find('mei:encodingDesc/mei:appInfo', namespaces=ns)
         if appInfo_el is None:
-            # Create appInfo element if it doesn't exist
             appInfo_el = etree.SubElement(head_el, 'appInfo')
             appInfo_el.set('n', 'Y4:0')
 
@@ -145,24 +149,38 @@ class MEI_Metadata_Updater:
         </application>"""
         appInfo_el.append(etree.fromstring(application))
         
-        
         # work data
         worklist_el = head_el.find('mei:workList', namespaces=ns)
+        if worklist_el is None:
+            worklist_el = etree.SubElement(head_el, 'workList')
         work_el = worklist_el.find('mei:work', namespaces=ns)
+        if work_el is None:
+            work_el = etree.SubElement(worklist_el, 'work')
+
         # title
-        work_el.find('mei:title', namespaces=ns).text = matching_dict['Title']
-        # composer (using persName structure)
-        composer_el = etree.Element('persName', {
-            'role': 'composer',
-            'auth': 'VIAF',
-            'auth.uri': matching_dict['Composer_VIAF']
-        })
-        composer_el.text = matching_dict['Composer_Name']
-        etree.SubElement(work_el, 'composer').append(deepcopy(composer_el))
-        
-        classification = f'<classification><termList><term>{matching_dict["Genre"].strip()}</term></termList></classification>'
-        work_el.append(etree.fromstring(classification))
-        
+        title_elem = work_el.find('mei:title', namespaces=ns)
+        if title_elem is None:
+            title_elem = etree.SubElement(work_el, 'title')
+        title_elem.set('type', 'main')
+        title_elem.text = matching_dict['Title']
+
+        # composer
+        composer_elem = work_el.find('mei:composer', namespaces=ns)
+        if composer_elem is None:
+            composer_elem = etree.SubElement(work_el, 'composer')
+        composer_elem.set('role', 'composer')
+        composer_elem.set('auth', 'VIAF')
+        composer_elem.set('auth.uri', matching_dict['Composer_VIAF'])
+        composer_elem.text = matching_dict['Composer_Name']
+
+        # genre
+        classification_elem = work_el.find('mei:classification', namespaces=ns)
+        if classification_elem is None:
+            classification_elem = etree.SubElement(work_el, 'classification')
+            term_elem = etree.SubElement(classification_elem, 'termList')
+            term_elem = etree.SubElement(term_elem, 'term')
+            term_elem.text = matching_dict["Genre"].strip()
+
         # Create a new manifestationList without any attributes
         new_manifestation_list = etree.Element("manifestationList")
 
@@ -200,18 +218,19 @@ class MEI_Metadata_Updater:
         geog_name = etree.SubElement(repository, "geogName")
         geog_name.text = matching_dict['Source_Location']
 
-        # Append to head element instead of root
-        head_el.append(new_manifestation_list)
-        
-        # check for second publisher
-        if len(matching_dict['Source_Publisher_2'].strip()) > 1:
-            # add second publisher
-            publisher.append(
-                etree.fromstring(f'<persName auth="VIAF" auth.uri="{matching_dict["Publisher_2_VIAF"]}">{matching_dict["Source_Publisher_2"]}</persName>')
-            )
-        
+        # Check for second publisher
+        second_publisher_elem = manifestation.find('mei:persName', namespaces=ns)
+        if second_publisher_elem is None:
+            second_publisher_elem = etree.SubElement(manifestation, 'persName')
+        second_publisher_elem.set('auth', 'VIAF')
+        second_publisher_elem.set('auth.uri', matching_dict['Publisher_2_VIAF'])
+        second_publisher_elem.text = matching_dict['Source_Publisher_2']
+
         # pub date
-        date.text = matching_dict['Source_Date']
+        date_elem = manifestation.find('mei:date', namespaces=ns)
+        if date_elem is None:
+            date_elem = etree.SubElement(manifestation, 'date')
+        date_elem.text = matching_dict['Source_Date']
 
         # now we REMOVE the ids from anywhere in the head
         head_el = root.find('mei:meiHead', namespaces=ns)
