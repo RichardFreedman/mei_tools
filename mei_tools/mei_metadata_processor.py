@@ -201,8 +201,11 @@ class MEI_Metadata_Updater:
         pers_name.text = matching_dict['Source_Publisher_1']
 
         # Add date element
-        date = etree.SubElement(pub_stmt, "date")
-        date.text = matching_dict['Source_Date']
+        date_elem = etree.SubElement(pub_stmt, "date")
+        if isinstance(matching_dict['Source_Date'], int):
+            date_elem.text = str(matching_dict['Source_Date'])
+        else:
+            date_elem.text = str(matching_dict['Source_Date']).replace('/', '-')
 
         # Add physLoc with proper structure
         phys_loc = etree.SubElement(manifestation, "physLoc")
@@ -230,8 +233,8 @@ class MEI_Metadata_Updater:
         date_elem = manifestation.find('mei:date', namespaces=ns)
         if date_elem is None:
             date_elem = etree.SubElement(manifestation, 'date')
-        date_elem.text = matching_dict['Source_Date']
-
+        date_elem.text = str(matching_dict['Source_Date']).replace('/', '-')
+        
         # now we REMOVE the ids from anywhere in the head
         head_el = root.find('mei:meiHead', namespaces=ns)
         if head_el is not None:
