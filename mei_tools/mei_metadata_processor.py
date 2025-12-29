@@ -130,11 +130,15 @@ class MEI_Metadata_Updater:
         
         # appInfo
         appInfo_el = head_el.find('mei:encodingDesc/mei:appInfo', namespaces=ns)
-        if appInfo_el is not None:
-            # Remove all existing application tags
-            for app in appInfo_el.findall('mei:application', namespaces=ns):
-                appInfo_el.remove(app)
-    
+        if appInfo_el is None:
+            # Create appInfo element if it doesn't exist
+            appInfo_el = etree.SubElement(head_el, 'appInfo')
+            appInfo_el.set('n', 'Y4:0')
+
+        # Remove all existing application tags
+        for app in appInfo_el.findall('mei:application', namespaces=ns):
+            appInfo_el.remove(app)
+
         # Add the new application tag
         application = """<application version="2.0.0">
             <name>MEI Updater 2025</name>
