@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "mei_tools"
-version = "2.0.2"
+version = "2.0.3"
 description = "Tools for processing MEI (Music Encoding Initiative) files"
 authors = [
     "Richard Freedman <your.email@example.com>"
