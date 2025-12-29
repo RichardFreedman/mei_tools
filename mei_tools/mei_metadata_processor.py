@@ -140,7 +140,7 @@ class MEI_Metadata_Updater:
             appInfo_el.remove(app)
 
         # Add the new application tag
-        application = """<application version="2.0.0">
+        application = """<application version="2.0.3">
             <name>MEI Updater 2025</name>
         </application>"""
         appInfo_el.append(etree.fromstring(application))
