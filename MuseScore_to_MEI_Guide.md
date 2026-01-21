@@ -266,6 +266,43 @@ Here is the second dialogue, where you can select the vocal part type:
 
 <br>
 
+## Empty Staves Hidden By Default
+
+- In CRIM editions, any empty staves are hidden by default in the engraved PDF output. MuseScore has a built-in function to do this automatically, which we have enabled in the CRIM Style Sheet.  Note that in the first system of a piece, all staves will be shown, even if empty.  But in subsequent systems, empty staves will be hidden automatically.
+
+This is the result in the PDF.
+
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_empty_view.png" />
+>
+> </details>
+
+<br>
+
+In the MEI export, all staves are retained, even if empty.
+
+During your editorial work you might want to see all staves, even if empty.  This can be done temporarily by clicking the 'eye' icon in the relevant passage, as shown here:
+
+<br>
+
+> <details>
+> <summary>Show Image</summary>
+> <img src="images/ms_empty_hid.png" />
+>
+> </details>
+
+<br>
+
+If you want to change this behavior,
+
+You can adjust it as follows:
+    - Open the `Format > Style` menu in MuseScore
+    - Select the `Score` tab
+    - check/uncheck the box for `Automatically hide all empty staves` (and see option for treatment of first system)
+
 ## Brackets
 
 Add staff brackets to group related staves together.  This is done using the `Palettes > Brackets` menu in MuseScore.
