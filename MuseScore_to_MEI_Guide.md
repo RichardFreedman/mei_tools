@@ -266,7 +266,7 @@ Here is the second dialogue, where you can select the vocal part type:
 
 <br>
 
-## Empty Staves Hidden By Default
+### Empty Staves Hidden By Default
 
 - In CRIM editions, any empty staves are hidden by default in the engraved PDF output. MuseScore has a built-in function to do this automatically, which we have enabled in the CRIM Style Sheet.  Note that in the first system of a piece, all staves will be shown, even if empty.  But in subsequent systems, empty staves will be hidden automatically.
 
