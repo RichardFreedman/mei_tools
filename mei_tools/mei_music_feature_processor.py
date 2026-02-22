@@ -16,6 +16,7 @@ class MEI_Music_Feature_Processor:
     def process_music_features(self, mei_path,
                                output_folder,
                                remove_incipit=True,
+                               remove_incipit_leuven=False,
                                remove_pb=True,
                                remove_sb=True,
                                remove_annotation=True,
@@ -81,7 +82,7 @@ class MEI_Music_Feature_Processor:
               'xml': 'http://www.w3.org/XML/1998/namespace'
         }
 
-        # inicipt removal
+        # incipit removal
         if remove_incipit:
             # Find measure with label="0" and n="1"
             incipit_xpath = '//mei:measure[@label="0"][@n="1"]'
@@ -108,6 +109,70 @@ class MEI_Music_Feature_Processor:
                         measure.set('n', new_number)
                         measure.set('label', new_number)
                     
+        # leuven incipit removal
+        if remove_incipit_leuven:
+            # The Leuven incipit consists of two leading right="invis" measures at the
+            # start of the first section, followed immediately by a scoreDef.
+            # Other right="invis" measures appear throughout the piece (invisible barlines)
+            # and must NOT be removed, so we walk the section children from the top
+            # rather than searching the whole document.
+            section = root.find('.//mei:section', namespaces=ns)
+
+            if section is None:
+                print("No section found for Leuven incipit removal.")
+            else:
+                leading_invis = []
+                following_score_def = None
+
+                for child in section:
+                    tag = child.tag.split('}')[-1] if '}' in child.tag else child.tag
+                    if tag in ('pb', 'sb'):
+                        continue  # skip layout elements before the measures
+                    elif tag == 'measure' and child.get('right') == 'invis':
+                        leading_invis.append(child)
+                    elif tag == 'scoreDef' and leading_invis:
+                        following_score_def = child
+                        break
+                    else:
+                        break  # hit a normal measure — incipit is over
+
+                if not leading_invis:
+                    print("No invisible incipit measures found for Leuven incipit removal.")
+                elif following_score_def is None:
+                    print("No scoreDef found after invisible measures.")
+                else:
+                    # Step 2: Capture meter values from the scoreDef after the incipit
+                    meter_count = following_score_def.get('meter.count')
+                    meter_unit = following_score_def.get('meter.unit')
+                    print(f"Found meter.count={meter_count}, meter.unit={meter_unit} from scoreDef after invisible measures.")
+
+                    # Step 3: Remove that scoreDef
+                    section.remove(following_score_def)
+                    print("Removed scoreDef after invisible measures.")
+
+                    # Step 4: Update the very first scoreDef of the piece
+                    first_score_def = root.find('.//mei:scoreDef', namespaces=ns)
+                    if first_score_def is not None and meter_count and meter_unit:
+                        first_score_def.set('meter.count', meter_count)
+                        first_score_def.set('meter.unit', meter_unit)
+                        print(f"Updated first scoreDef with meter.count={meter_count}, meter.unit={meter_unit}.")
+
+                    # Step 5: Remove the leading invisible measures
+                    for invis_measure in leading_invis:
+                        section.remove(invis_measure)
+                    print(f"Removed {len(leading_invis)} invisible incipit measure(s).")
+
+                    # Renumber all remaining measures starting from 1
+                    # and remove any remaining right="invis" attributes
+                    measures = root.xpath('//mei:measure', namespaces=ns)
+                    print("Renumbering measures and removing invis barline attributes...")
+                    for idx, measure in enumerate(measures, 1):
+                        new_number = str(idx)
+                        measure.set('n', new_number)
+                        measure.set('label', new_number)
+                        if measure.get('right') == 'invis':
+                            del measure.attrib['right']
+
         # page break removal
         if remove_pb:
             # Find pb elements
