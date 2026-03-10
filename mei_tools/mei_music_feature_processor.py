@@ -15,6 +15,7 @@ class MEI_Music_Feature_Processor:
 
     def process_music_features(self, mei_path,
                                output_folder,
+                               resolve_multibar_ties=True,
                                remove_incipit=True,
                                remove_incipit_leuven=False,
                                remove_pb=True,
@@ -199,6 +200,72 @@ class MEI_Music_Feature_Processor:
             for annotation in annotations:
                 annotation.getparent().remove(annotation)
 
+        # multi-bar tie resolution
+        if resolve_multibar_ties:
+            # Build xml:id → note element lookup across whole document
+            id_to_note = {}
+            for note in root.xpath('//mei:note', namespaces=ns):
+                xml_id = note.get('{http://www.w3.org/XML/1998/namespace}id')
+                if xml_id:
+                    id_to_note[xml_id] = note
+
+            # Build tie graph: startid → endid (strip leading '#')
+            tie_graph = {}
+            for tie_elem in root.xpath('//mei:tie', namespaces=ns):
+                startid = (tie_elem.get('startid') or '').lstrip('#')
+                endid   = (tie_elem.get('endid')   or '').lstrip('#')
+                if startid and endid:
+                    tie_graph[startid] = endid
+
+            if not tie_graph:
+                print("  No <tie> elements found, skipping tie resolution.")
+            else:
+                # Chain heads: startids that are never themselves an endid
+                # Without this step, middle notes in a 3+ bar chain get 'i' instead of 'm'
+                all_endids = set(tie_graph.values())
+                chain_heads = [sid for sid in tie_graph if sid not in all_endids]
+
+                chains_found = 0
+                multibar_found = 0
+
+                for head in chain_heads:
+                    # Traverse the FULL chain before touching any note element
+                    chain = [head]
+                    current = head
+                    visited = {head}
+                    while current in tie_graph:
+                        nxt = tie_graph[current]
+                        if nxt in visited:
+                            print(f"  Warning: circular tie detected at {current}, breaking.")
+                            break
+                        chain.append(nxt)
+                        visited.add(nxt)
+                        current = nxt
+
+                    chains_found += 1
+                    if len(chain) > 2:
+                        multibar_found += 1
+                        print(f"  Multi-bar chain ({len(chain)} notes): {' -> '.join(chain)}")
+
+                    # Assign @tie="i"/"m"/"t" based on position in full chain
+                    for i, node_id in enumerate(chain):
+                        note_elem = id_to_note.get(node_id)
+                        if note_elem is None:
+                            print(f"  Warning: no note found for xml:id='{node_id}'")
+                            continue
+                        if len(chain) == 2:
+                            attr = 'i' if i == 0 else 't'
+                        elif i == 0:
+                            attr = 'i'
+                        elif i == len(chain) - 1:
+                            attr = 't'
+                        else:
+                            attr = 'm'  # MEI 'continue': middle of a 3+ bar chain
+                        note_elem.set('tie', attr)
+
+                print(f"  Tie resolution: {chains_found} chains processed, "
+                      f"{multibar_found} spanning 3+ measures.")
+        
         # dir elements, which are like annotations
         if remove_dir:
             # Find pb elements
