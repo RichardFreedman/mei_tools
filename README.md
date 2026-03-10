@@ -241,6 +241,42 @@ for mei_path in mei_paths:
 ```
 
 
+### Parameter Reference Table
+
+The following table summarizes all parameters available in `process_music_features`, their default values, and what each does:
+
+| Parameter | Default | Description |
+|---|---|---|
+| `mei_path` | **REQUIRED** | Path to the input MEI file |
+| `output_folder` | **REQUIRED** | Directory where the revised file will be saved |
+| `resolve_multibar_ties` | `True` | Converts `<tie>` chains to `@tie="i/m/t"` attributes on notes |
+| `remove_incipit` | `True` | Removes measure with `label="0" n="1"` and renumbers remaining measures from 1 |
+| `remove_incipit_leuven` | `False` | Removes Leuven-style invisible incipit measures and updates meter from following scoreDef |
+| `remove_pb` | `True` | Removes `<pb>` page break elements |
+| `remove_sb` | `True` | Removes `<sb>` section break elements |
+| `remove_annotation` | `True` | Removes `<annot>` annotation elements |
+| `remove_ligature_bracket` | `True` | Removes `<bracketSpan>` ligature bracket elements (CMME exports) |
+| `remove_dir` | `True` | Removes `<dir>` direction elements |
+| `remove_variants` | `True` | Flattens `<app>`/`<lem>`/`<rdg>` apparatus, keeping only lemma notes |
+| `remove_anchored_text` | `True` | Removes `<anchoredText>` elements that can distort Verovio rendering |
+| `remove_timestamp` | `True` | Strips `tstamp.real` and `vel` attributes from notes, rests, and mRests |
+| `remove_chord` | `True` | Removes `<chord>` elements |
+| `check_for_chords` | `True` | Reports any remaining `<chord>` elements by measure number (does not remove) |
+| `remove_senfl_bracket` | `False` | Removes `<line type="bracket">` elements used in the Senfl Edition |
+| `remove_empty_verse` | `False` | Removes empty `<verse>` elements that can distort Verovio layout |
+| `remove_lyrics` | `False` | Removes all `<verse>` (lyrics) elements — use when text underlay must be redone |
+| `fix_elisions` | `True` | Merges double `<syl>` elements (Sibelius exports) into a single tag with `=` separator |
+| `fix_musescore_elisions` | `True` | Fixes MuseScore `con="b"` elision encoding with correct `wordpos` and `con` attributes |
+| `slur_to_tie` | `True` | Converts `<slur>` elements to `<tie>` (when editors mistakenly encode ties as slurs) |
+| `collapse_layers` | `False` | Merges all non-layer-1 content into layer 1 within each staff |
+| `correct_ficta` | `True` | Converts red-colored notes with accidentals into proper MEI `<supplied>` elements |
+| `voice_labels` | `True` | Moves `<label>` child text to `@label` attribute on `<staffDef>` (needed for Verovio and CRIM Intervals) |
+| `correct_cmme_time_signatures` | `False` | Moves time signature attributes from `<staffDef>` to `<scoreDef>` for CMME files |
+| `correct_jrp_time_signatures` | `False` | Moves `meterSig` elements from JRP `<staffDef>` elements up to `<scoreDef>` |
+| `correct_mrests` | `True` | Expands `<mRest>` elements into three semibreve rests (fixes music21 issue under 3/1 mensuration) |
+
+---
+
 ## Detailed Explanation of the Modules
 
 Note:  We can easily add more modules based on your experience with particular MEI files.
