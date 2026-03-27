@@ -322,11 +322,6 @@ Remove chord elements.  These are sometimes found in XML files, and this module 
 
 Collapse layers within staff elements.  Again, some files put notes on different MEI layers.  This module combines those layers.
 
----
-
-#### remove_empty_verses
-
-Remove empty verse elements.  In some cases we find extra verse elements that nevertheless lack content.  These create problems for layout with Verovio, and so we can remove them.
 
 ---
 

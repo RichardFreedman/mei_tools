@@ -556,25 +556,24 @@ class MEI_Music_Feature_Processor:
         
         # Remove empty verse elements
         if remove_empty_verse:
-            if remove_empty_verse:
-                # Find all parent elements that might contain verses
-                for parent in root.findall('.//mei:syllable', namespaces=ns):
-                    # Find all verses within this parent
-                    verses = parent.findall('mei:verse', namespaces=ns)
-                    # Create a list of verses to keep
-                    verses_to_keep = []
+            # Find all parent elements that might contain verses
+            for parent in root.findall('.//mei:syllable', namespaces=ns):
+                # Find all verses within this parent
+                verses = parent.findall('mei:verse', namespaces=ns)
+                # Create a list of verses to keep
+                verses_to_keep = []
+                for verse in verses:
+                    if list(verse):  # If verse has children
+                        verses_to_keep.append(verse)
+                
+                # If we found empty verses, clear the parent and add back only non-empty verses
+                if len(verses_to_keep) < len(verses):
+                    # Remove all verses from parent
                     for verse in verses:
-                        if list(verse):  # If verse has children
-                            verses_to_keep.append(verse)
-                    
-                    # If we found empty verses, clear the parent and add back only non-empty verses
-                    if len(verses_to_keep) < len(verses):
-                        # Remove all verses from parent
-                        for verse in verses:
-                            parent.remove(verse)
-                        # Add back only non-empty verses
-                        for verse in verses_to_keep:
-                            parent.append(verse)
+                        parent.remove(verse)
+                    # Add back only non-empty verses
+                    for verse in verses_to_keep:
+                        parent.append(verse)
         
         # Remove all lyrics
         if remove_lyrics:
