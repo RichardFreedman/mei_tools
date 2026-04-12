@@ -48,27 +48,27 @@ base         = os.path.dirname(input_folder)
 corpus_name  = os.path.basename(input_folder)
 
 folders = {
-    'input':    input_folder,
-    'csv':      os.path.join(base, corpus_name + '_csv'),
-    'updated':  os.path.join(base, corpus_name + '_updated'),
-    'features': os.path.join(base, corpus_name + '_features'),
+    'input':         input_folder,
+    'extracted_csv': os.path.join(base, corpus_name + '_extracted_csv'),
+    'revised_csv':   os.path.join(base, corpus_name + '_revised_csv'),
+    'updated_mei':   os.path.join(base, corpus_name + '_updated_mei'),
 }
 
 for name, path in folders.items():
     os.makedirs(path, exist_ok=True)
-    print(f'{name:10s}  →  {path}')
+    print(f'{name:15s}  →  {path}')
 ```
 
 For a corpus at `MyDrive/my_mei_corpus/` this produces:
 
 ```
-input       →  /content/drive/MyDrive/my_mei_corpus
-csv         →  /content/drive/MyDrive/my_mei_corpus_csv
-updated     →  /content/drive/MyDrive/my_mei_corpus_updated
-features    →  /content/drive/MyDrive/my_mei_corpus_features
+input            →  /content/drive/MyDrive/my_mei_corpus
+extracted_csv    →  /content/drive/MyDrive/my_mei_corpus_extracted_csv
+revised_csv      →  /content/drive/MyDrive/my_mei_corpus_revised_csv
+updated_mei      →  /content/drive/MyDrive/my_mei_corpus_updated_mei
 ```
 
-All four folders are now available as `folders['input']`, `folders['csv']`, etc. for the remaining steps.
+All four folders are available as `folders['input']`, `folders['extracted_csv']`, etc. for the remaining steps.
 
 ---
 
@@ -80,7 +80,7 @@ from mei_tools import MEI_Metadata_Extractor
 extractor = MEI_Metadata_Extractor(verbose=True)
 extractor.save_csvs(
     input_folder=folders['input'],
-    output_folder=folders['csv']
+    output_folder=folders['extracted_csv']
 )
 ```
 
@@ -157,18 +157,19 @@ If you prefer to maintain metadata in a Google Sheet:
 from mei_tools import MEI_Metadata_Updater_Generic
 import os
 
+# Point to the CSV you edited and saved into folders['revised_csv'].
 # Adjust the filename for the source type you updated, e.g.:
 #   hum_drum_extracted_metadata.csv
 #   muse_score_extracted_metadata.csv
 #   sib_extracted_metadata.csv
 #   mei_friend_extracted_metadata.csv
-csv_source = os.path.join(folders['csv'], 'hum_drum_extracted_metadata.csv')
+csv_source = os.path.join(folders['revised_csv'], 'hum_drum_extracted_metadata.csv')
 
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
     input_folder=folders['input'],
     csv_source=csv_source,
-    output_folder=folders['updated']
+    output_folder=folders['updated_mei']
 )
 ```
 
@@ -183,7 +184,7 @@ updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
     input_folder=folders['input'],
     csv_source=csv_source,
-    output_folder=folders['updated']
+    output_folder=folders['updated_mei']
 )
 ```
 
@@ -198,13 +199,13 @@ updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
     input_folder=folders['input'],
     csv_source=csv_source,
-    output_folder=folders['updated']
+    output_folder=folders['updated_mei']
 )
 ```
 
 ### Output
 
-Each matching MEI file is written to `folders['updated']` with `_rev` appended to the filename, e.g. `Ror0101_rev.mei`. The original files in `folders['input']` are never modified.
+Each matching MEI file is written to `folders['updated_mei']` with `_rev` appended to the filename, e.g. `Ror0101_rev.mei`. The original files in `folders['input']` are never modified.
 
 ---
 
@@ -220,15 +221,15 @@ from mei_tools import MEI_Metadata_Extractor, MEI_Metadata_Updater_Generic
 extractor = MEI_Metadata_Extractor(verbose=True, crim_mode=True)
 extractor.save_csvs(
     input_folder=folders['input'],
-    output_folder=folders['csv']
+    output_folder=folders['extracted_csv']
 )
 
 # (Edit the CSV, then apply)
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
     input_folder=folders['input'],
-    csv_source=os.path.join(folders['csv'], 'crim_extracted_metadata.csv'),
-    output_folder=folders['updated'],
+    csv_source=os.path.join(folders['revised_csv'], 'crim_extracted_metadata.csv'),
+    output_folder=folders['updated_mei'],
     crim_mode=True
 )
 ```
@@ -245,10 +246,10 @@ import glob
 
 music_feature_processor = MEI_Music_Feature_Processor()
 
-for mei_path in sorted(glob.glob(folders['updated'] + '/*.mei')):
+for mei_path in sorted(glob.glob(folders['updated_mei'] + '/*.mei')):
     music_feature_processor.process_music_features(
         mei_path,
-        folders['features'],
+        folders['updated_mei'],
         # --- most common corrections (True = apply) ---
         remove_incipit=True,
         remove_pb=True,
