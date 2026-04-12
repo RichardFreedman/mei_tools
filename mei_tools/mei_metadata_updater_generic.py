@@ -319,6 +319,45 @@ class MEI_Metadata_Updater_Generic:
         name_el.text = 'MEI Metadata Updater Generic'
 
     # ------------------------------------------------------------------
+    # Shared helper: composer in titleStmt/respStmt
+    # ------------------------------------------------------------------
+
+    def _write_composer_to_titlestmt(self, title_stmt, d, ns):
+        """
+        Ensure the composer is recorded as
+            titleStmt/respStmt/persName[@role='composer']
+        with authority attributes if provided.
+
+        This is required by Music21 and CRIM Intervals for all source types.
+        Called by every per-source update method so the location is consistent
+        regardless of where else the composer may be recorded natively.
+        """
+        if not self._val(d, 'composer_name'):
+            return
+
+        resp_stmt = _find_or_create(title_stmt, 'respStmt')
+
+        # Find existing composer persName or create one
+        comp_pn = None
+        for pn in resp_stmt.findall('mei:persName', namespaces=ns):
+            if pn.get('role') == 'composer':
+                comp_pn = pn
+                break
+        if comp_pn is None:
+            # Insert before any editor entries so composer comes first
+            comp_pn = etree.Element(_ns('persName'))
+            resp_stmt.insert(0, comp_pn)
+
+        comp_pn.set('role', 'composer')
+        comp_pn.text = self._val(d, 'composer_name')
+        if self._val(d, 'composer_auth'):
+            comp_pn.set('auth', self._val(d, 'composer_auth'))
+        if self._val(d, 'composer_auth_uri'):
+            comp_pn.set('auth.uri', self._val(d, 'composer_auth_uri'))
+        if self._val(d, 'composer_codedval'):
+            comp_pn.set('codedval', self._val(d, 'composer_codedval'))
+
+    # ------------------------------------------------------------------
     # Per-source update methods
     # ------------------------------------------------------------------
 
@@ -344,23 +383,9 @@ class MEI_Metadata_Updater_Generic:
             title_el = _find_or_create(title_stmt, 'title')
             title_el.text = self._val(d, 'title')
 
-        resp_stmt = _find_or_create(title_stmt, 'respStmt')
+        self._write_composer_to_titlestmt(title_stmt, d, ns)
 
-        if self._val(d, 'composer_name'):
-            # Find or create the composer persName
-            comp_pn = None
-            for pn in resp_stmt.findall('mei:persName', namespaces=ns):
-                if pn.get('role') == 'composer':
-                    comp_pn = pn
-                    break
-            if comp_pn is None:
-                comp_pn = etree.SubElement(resp_stmt, _ns('persName'))
-            comp_pn.set('role', 'composer')
-            comp_pn.text = self._val(d, 'composer_name')
-            if self._val(d, 'composer_auth'):
-                comp_pn.set('auth', self._val(d, 'composer_auth'))
-            if self._val(d, 'composer_auth_uri'):
-                comp_pn.set('auth.uri', self._val(d, 'composer_auth_uri'))
+        resp_stmt = _find_or_create(title_stmt, 'respStmt')
 
         if self._val(d, 'editors'):
             # Remove existing non-composer persNames then rebuild
@@ -426,8 +451,13 @@ class MEI_Metadata_Updater_Generic:
             title_el.text = self._val(d, 'title')
 
         if self._val(d, 'composer_name'):
+            # Keep the native Sibelius <composer> element
             comp_el = _find_or_create(title_stmt, 'composer')
             comp_el.text = self._val(d, 'composer_name')
+
+        # Also write composer into titleStmt/respStmt/persName[@role='composer']
+        # so Music21 and CRIM Intervals can locate it consistently
+        self._write_composer_to_titlestmt(title_stmt, d, ns)
 
         if self._val(d, 'editors'):
             resp_stmt = _find_or_create(title_stmt, 'respStmt')
@@ -475,10 +505,33 @@ class MEI_Metadata_Updater_Generic:
         head = root.find('mei:meiHead', namespaces=ns)
         file_desc = _find_or_create(head, 'fileDesc')
 
-        # Primary titleStmt title
+        # Primary titleStmt title + composer
+        ts = _find_or_create(file_desc, 'titleStmt')
         if self._val(d, 'title'):
-            ts = _find_or_create(file_desc, 'titleStmt')
             _find_or_create(ts, 'title').text = self._val(d, 'title')
+
+        # Write composer DIRECTLY into titleStmt/persName[@role='composer'].
+        # Humdrum/Verovio format places persName as a direct child of titleStmt
+        # (not inside respStmt).  Music21 and CRIM Intervals locate it via the
+        # role attribute regardless of the wrapper.
+        composer_name = self._val(d, 'composer_name')
+        if composer_name:
+            # Find or create persName[@role='composer'] directly in titleStmt
+            comp_pn = None
+            for pn in ts.findall('mei:persName', namespaces=ns):
+                if pn.get('role') == 'composer':
+                    comp_pn = pn
+                    break
+            if comp_pn is None:
+                comp_pn = etree.SubElement(ts, _ns('persName'))
+            comp_pn.set('role', 'composer')
+            comp_pn.text = composer_name
+            if self._val(d, 'composer_auth'):
+                comp_pn.set('auth', self._val(d, 'composer_auth'))
+            if self._val(d, 'composer_auth_uri'):
+                comp_pn.set('auth.uri', self._val(d, 'composer_auth_uri'))
+            if self._val(d, 'composer_codedval'):
+                comp_pn.set('codedval', self._val(d, 'composer_codedval'))
 
         # sourceDesc/source/bibl
         source_desc = _find_or_create(file_desc, 'sourceDesc')
@@ -658,24 +711,9 @@ class MEI_Metadata_Updater_Generic:
                     t.set('n', str(i))
                     t.text = sub
 
-        resp_stmt = _find_or_create(title_stmt, 'respStmt')
+        self._write_composer_to_titlestmt(title_stmt, d, ns)
 
-        if self._val(d, 'composer_name'):
-            comp_pn = None
-            for pn in resp_stmt.findall('mei:persName', namespaces=ns):
-                if pn.get('role') == 'composer':
-                    comp_pn = pn
-                    break
-            if comp_pn is None:
-                comp_pn = etree.SubElement(resp_stmt, _ns('persName'))
-            comp_pn.set('role', 'composer')
-            comp_pn.text = self._val(d, 'composer_name')
-            if self._val(d, 'composer_auth'):
-                comp_pn.set('auth', self._val(d, 'composer_auth'))
-            if self._val(d, 'composer_auth_uri'):
-                comp_pn.set('auth.uri', self._val(d, 'composer_auth_uri'))
-            if self._val(d, 'composer_codedval'):
-                comp_pn.set('codedval', self._val(d, 'composer_codedval'))
+        resp_stmt = _find_or_create(title_stmt, 'respStmt')
 
         if self._val(d, 'editors'):
             # Remove existing encoder entries, rebuild
