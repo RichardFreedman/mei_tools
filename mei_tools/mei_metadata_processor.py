@@ -4,6 +4,21 @@ from lxml import etree
 from datetime import datetime
 from copy import deepcopy
 
+
+def _read_mei_bytes(filepath):
+    """
+    Read an MEI file and return UTF-8 bytes.
+    Sibelius files are UTF-16 (BOM-prefixed); this converts them transparently.
+    """
+    with open(filepath, 'rb') as fh:
+        raw = fh.read()
+    if raw[:2] in (b'\xff\xfe', b'\xfe\xff'):
+        text = raw.decode('utf-16')
+        text = text.replace('encoding="UTF-16"', 'encoding="UTF-8"')
+        text = text.replace("encoding='UTF-16'", "encoding='UTF-8'")
+        raw = text.encode('utf-8')
+    return raw
+
 class MEI_Metadata_Updater:
     """
     A class for processing and updating metadata in MEI (Music Encoding Initiative) files.
@@ -58,9 +73,9 @@ class MEI_Metadata_Updater:
         print('Getting ' + basename)
         
         try:
-            # Parse the MEI file using lxml.etree
-            mei_doc = etree.parse(mei_path)
-            root = mei_doc.getroot()
+            # Parse the MEI file; _read_mei_bytes handles UTF-16 (Sibelius) files
+            raw  = _read_mei_bytes(mei_path)
+            root = etree.fromstring(raw)
         except etree.ParseError as e:
             print(f"Error parsing {mei_path}: {e}")
             return f"Error: Could not parse {mei_path}. Make sure it contains valid XML."
@@ -221,20 +236,19 @@ class MEI_Metadata_Updater:
         geog_name = etree.SubElement(repository, "geogName")
         geog_name.text = matching_dict['Source_Location']
 
-        # Check for second publisher
-        second_publisher_elem = manifestation.find('mei:persName', namespaces=ns)
-        if second_publisher_elem is None:
-            second_publisher_elem = etree.SubElement(manifestation, 'persName')
+        # Second publisher (stored directly on manifestation, not inside pubStmt)
+        second_publisher_elem = etree.SubElement(manifestation, 'persName')
         second_publisher_elem.set('auth', 'VIAF')
         second_publisher_elem.set('auth.uri', matching_dict['Publisher_2_VIAF'])
         second_publisher_elem.text = matching_dict['Source_Publisher_2']
 
-        # pub date
-        date_elem = manifestation.find('mei:date', namespaces=ns)
-        if date_elem is None:
-            date_elem = etree.SubElement(manifestation, 'date')
-        date_elem.text = str(matching_dict['Source_Date']).replace('/', '-')
-        
+        # Attach the fully-built manifestationList to the work element.
+        # Remove any previous manifestationList first to avoid duplicates
+        # on repeated runs.
+        for old_ml in work_el.findall('mei:manifestationList', namespaces=ns):
+            work_el.remove(old_ml)
+        work_el.append(new_manifestation_list)
+
         # now we REMOVE the ids from anywhere in the head
         head_el = root.find('mei:meiHead', namespaces=ns)
         if head_el is not None:

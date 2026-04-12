@@ -1,0 +1,2 @@
+filename,source_type,mei_version,title,title_subordinate,composer_name,composer_auth,composer_auth_uri,composer_codedval,editors,encoding_date,rights,publisher,distributor,genre,encoding_application,work_title,movement_name,source_title,source_composer,source_editor,source_encoder,edition_version,encoding_annot,humdrum_id
+mei_friend_header.mei,mei_friend,4.0.0,Romanze,a-Moll|ohne Opuszahl,Clara Schumann,GND,http://d-nb.info/gnd,11861164X,Werner Goebl [encoder],2019-09-05,,,,,Verovio 2.1.0-dev-f719b1b|mei-friend 1.0.9,,,,,,,,,
