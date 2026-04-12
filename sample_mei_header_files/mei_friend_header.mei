@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="https://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="4.0.0">
+   <meiHead>
+      <fileDesc>
+         <titleStmt>
+            <title>Romanze</title>
+            <title type="subordinate" n="1">a-Moll</title>
+            <title type="subordinate" n="2" label="Opus number">ohne Opuszahl</title>
+            <respStmt>
+               <persName role="composer" auth.uri="http://d-nb.info/gnd" auth="GND" codedval="11861164X">Clara Schumann</persName>
+               <persName role="encoder" enddate="2019-09-05T15:16:10">Werner Goebl</persName>
+            </respStmt>
+         </titleStmt>
+         <pubStmt>
+            <respStmt>
+               <persName role="encoder" auth.uri="http://d-nb.info/gnd" auth="GND" codedval="1138881465">Werner Goebl</persName>
+            </respStmt>
+         </pubStmt>
+      </fileDesc>
+      <encodingDesc xml:id="encodingdesc-0000001688129963">
+         <appInfo xml:id="appinfo-0000001993827624">
+            <application xml:id="application-0000000926048780" isodate="2019-02-21T13:57:41" version="2.1.0-dev-f719b1b">
+               <name xml:id="name-0000001287855651">Verovio</name>
+               <p xml:id="p-0000000502248244">Transcoded from MusicXML</p>
+            </application>
+            <application xml:id="a62a2zt1" startdate="2024-02-29T14:24:17" version="1.0.9">
+               <name xml:id="n64h0ev1">mei-friend</name>
+               <p xml:id="p2wq52e1">First edit by mei-friend 1.0.9, 30 January 2024.</p>
+            </application>
+         </appInfo>
+      </encodingDesc>
+   </meiHead>
+   <music>
+   </music>
+</mei>

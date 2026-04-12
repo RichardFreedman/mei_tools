@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://music-encoding.org/schema/5.1/mei-basic.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="https://music-encoding.org/schema/5.1/mei-basic.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" xml:id="m-1" meiversion="5.1+basic">
+   <meiHead xml:id="m-2">
+      <fileDesc>
+         <titleStmt>
+            <title>
+     Flora wilt thou, RISM A/I: M 3701.  No. 12
+    </title>
+            <respStmt>
+               <persName auth="VIAF" auth.uri="https://viaf.org/viaf/77117535" role="composer">
+      Morley, Thomas
+     </persName>
+               <persName role="xml_editor">
+      André Vierendeels
+     </persName>
+               <persName role="mei_editor">
+      Richard Freedman
+     </persName>
+               <persName role="analyst">
+      Starkey, Holden
+     </persName>
+            </respStmt>
+         </titleStmt>
+         <pubStmt>
+            <publisher />
+            <distributor />
+            <date isodate="2024-11-19" />
+            <availability>
+     Copyright André Vierendeels (transcription) and Richard Freedman (MEI), available on a Creative Commons 4.0 license.  NC CC SA
+    </availability>
+         </pubStmt>
+      </fileDesc>
+      <encodingDesc>
+         <appInfo>
+            <application>
+               <name>
+      MEI Soup Updater 2024
+     </name>
+            </application>
+         </appInfo>
+      </encodingDesc>
+      <workList>
+         <work>
+            <title>
+     Flora wilt thou
+    </title>
+            <identifier />
+            <composer auth="VIAF" auth.uri="https://viaf.org/viaf/77117535">
+     Morley, Thomas
+    </composer>
+         </work>
+      </workList>
+   </meiHead>
+   <music>
+   </music>
+</mei>

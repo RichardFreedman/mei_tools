@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://music-encoding.org/schema/5.1/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="https://music-encoding.org/schema/5.1/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="5.1">
+   <meiHead>
+      <fileDesc>
+         <titleStmt>
+            <title>Cantai mentre chi'i' arsi del mio foco, Cantai mentre chi'i' arsi</title>
+         </titleStmt>
+         <pubStmt>
+            <unpub>This MEI file was created by Verovio's Humdrum converter. When published, this unpub element should be removed, and the enclosing pubStmt element should be properly filled out.</unpub>
+         </pubStmt>
+         <sourceDesc>
+            <source type="digital">
+               <bibl>
+                  <title>Cantai mentre chi'i' arsi del mio foco, Cantai mentre chi'i' arsi</title>
+                  <composer>
+                     <persName>Cipriano de Rore</persName>
+                  </composer>
+                  <editor analog="humdrum:EED">Jessie Ann Owens and Scott Metcalfe</editor>
+                  <respStmt>
+                     <resp>encoder</resp>
+                     <persName analog="humdrum:ENC">Jessie Ann Owens and Scott Metcalfe</persName>
+                  </respStmt>
+                  <edition type="version" analog="humdrum:EEV">2024/11/09</edition>
+                  <imprint>
+                     <date type="encodingDate" analog="humdrum:END" isodate="2024-11-09">2024/11/09</date>
+                  </imprint>
+                  <availability>
+                     <useRestrict type="copyright" analog="humdrum:YEC">Copyright 2024 Jessie Ann Owens and Scott Metcalfe, All Rights Reserved</useRestrict>
+                  </availability>
+                  <annot>
+                     <lg>
+                        <l type="humdrum:ONB">Translated from MusicXML on 2024/11/09</l>
+                     </lg>
+                  </annot>
+               </bibl>
+            </source>
+         </sourceDesc>
+      </fileDesc>
+      <encodingDesc>
+         <appInfo>
+            <application isodate="2026-04-02T03:28:47" version="5.8.0-dev-4624022">
+               <name>Verovio</name>
+               <p>Transcoded from Humdrum</p>
+            </application>
+         </appInfo>
+      </encodingDesc>
+      <workList>
+         <work xml:id="work0_encoded" type="encoded">
+            <title type="uniform">
+               <titlePart type="main" analog="humdrum:OTL">Cantai mentre chi'i' arsi del mio foco</titlePart>
+               <titlePart type="movementName" analog="humdrum:OMD">Cantai mentre chi'i' arsi</titlePart>
+            </title>
+            <composer>
+               <persName analog="humdrum:COM">Cipriano de Rore</persName>
+            </composer>
+            <classification>
+               <termList>
+                  <term label="genre" analog="humdrum:AGN">Madrigal</term>
+               </termList>
+            </classification>
+         </work>
+      </workList>
+      <extMeta>
+         <frames xmlns="http://www.humdrum.org/ns/humxml">
+            <metaFrame n="0" token="!!!!SEGMENT: Ror0101-Cantai_mentre_chii_arsi_del_mio_foco.krn" xml:id="L1">
+               <frameInfo>
+                  <startTime float="0" />
+                  <frameType>ureference</frameType>
+                  <referenceKey>SEGMENT</referenceKey>
+                  <referenceValue>Ror0101-Cantai_mentre_chii_arsi_del_mio_foco.krn</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="1" token="!!!id: Ror0101" xml:id="L2">
+               <frameInfo>
+                  <startTime float="0" />
+                  <frameType>reference</frameType>
+                  <referenceKey>id</referenceKey>
+                  <referenceValue>Ror0101</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="2" token="!!!AGN: Madrigal" xml:id="L3">
+               <frameInfo>
+                  <startTime float="0" />
+                  <frameType>reference</frameType>
+                  <referenceKey>AGN</referenceKey>
+                  <referenceValue>Madrigal</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="3" token="!!!voices: 5" xml:id="L4">
+               <frameInfo>
+                  <startTime float="0" />
+                  <frameType>reference</frameType>
+                  <referenceKey>voices</referenceKey>
+                  <referenceValue>5</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="4" token="!!!COM: Cipriano de Rore" xml:id="L5">
+               <frameInfo>
+                  <startTime float="0" />
+                  <frameType>reference</frameType>
+                  <referenceKey>COM</referenceKey>
+                  <referenceValue>Cipriano de Rore</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="5" token="!!!OTL: Cantai mentre chi'i' arsi del mio foco" xml:id="L6">
+               <frameInfo>
+                  <startTime float="0" />
+                  <frameType>reference</frameType>
+                  <referenceKey>OTL</referenceKey>
+                  <referenceValue>Cantai mentre chi'i' arsi del mio foco</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="17" token="!!!OMD: Cantai mentre chi'i' arsi" xml:id="L18">
+               <frameInfo>
+                  <startTime float="0" />
+                  <frameType>reference</frameType>
+                  <referenceKey>OMD</referenceKey>
+                  <referenceValue>Cantai mentre chi'i' arsi</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="558" token="!!!system-decoration: [*]" xml:id="L559">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>system-decoration</referenceKey>
+                  <referenceValue>[*]</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="559" token="!!!RDF**kern: i = editorial accidental" xml:id="L560">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>RDF**kern</referenceKey>
+                  <referenceValue>i = editorial accidental</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="560" token="!!!RDF**kern: l = terminal long" xml:id="L561">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>RDF**kern</referenceKey>
+                  <referenceValue>l = terminal long</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="561" token="!!!ENC: Jessie Ann Owens and Scott Metcalfe" xml:id="L562">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>ENC</referenceKey>
+                  <referenceValue>Jessie Ann Owens and Scott Metcalfe</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="562" token="!!!END: 2024/11/09" xml:id="L563">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>END</referenceKey>
+                  <referenceValue>2024/11/09</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="563" token="!!!EED: Jessie Ann Owens and Scott Metcalfe" xml:id="L564">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>EED</referenceKey>
+                  <referenceValue>Jessie Ann Owens and Scott Metcalfe</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="564" token="!!!EEV: 2024/11/09" xml:id="L565">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>EEV</referenceKey>
+                  <referenceValue>2024/11/09</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="565" token="!!!YEC: Copyright 2024 Jessie Ann Owens and Scott Metcalfe, All Rights Reserved" xml:id="L566">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>YEC</referenceKey>
+                  <referenceValue>Copyright 2024 Jessie Ann Owens and Scott Metcalfe, All Rights Reserved</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="566" token="!!!ONB: Translated from MusicXML on 2024/11/09" xml:id="L567">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>ONB</referenceKey>
+                  <referenceValue>Translated from MusicXML on 2024/11/09</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="567" token="!!!verovio: header encoded" xml:id="L568">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>verovio</referenceKey>
+                  <referenceValue>header encoded</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="568" token="!!!header-left: Edited by @{ENC} (2024)\n" xml:id="L569">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>header-left</referenceKey>
+                  <referenceValue>Edited by @{ENC} (2024)\n</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="569" token="!!!header-right:" xml:id="L570">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>header-right</referenceKey>
+                  <referenceValue />
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="570" token="!!!header-center:" xml:id="L571">
+               <frameInfo>
+                  <startTime float="432" />
+                  <frameType>reference</frameType>
+                  <referenceKey>header-center</referenceKey>
+                  <referenceValue />
+               </frameInfo>
+            </metaFrame>
+         </frames>
+      </extMeta>
+   </meiHead>
+   <music decls="#work0_encoded">
+   </music>
+</mei>
