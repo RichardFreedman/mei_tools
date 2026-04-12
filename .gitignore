@@ -1,2 +1,12 @@
 __pycache__/
 *.py[cod]
+
+# Ignore folder contents but keep the folders (via .gitkeep)
+mei_to_process/*
+!mei_to_process/.gitkeep
+updated_metadata_csv_files/*
+!updated_metadata_csv_files/.gitkeep
+mei_with_updated_metadata/*
+!mei_with_updated_metadata/.gitkeep
+mei_with_updated_music_features/*
+!mei_with_updated_music_features/.gitkeep
