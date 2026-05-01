@@ -656,6 +656,8 @@ mei_tools/
 - Richard Freedman (Haverford College, USA)
 - Vincent Besson (CESR, Tours, France)
 
-Package version: 2.0.3
+Package version: 2.0.4
+
+Updated May 2026
 
 This work is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
