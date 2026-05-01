@@ -49,7 +49,7 @@ folders = {
     'B_extracted_metadata_csv':    os.path.join(project_folder, 'B_extracted_metadata_csv'),
     'C_updated_metadata_csv':      os.path.join(project_folder, 'C_updated_metadata_csv'),
     'D_mei_with_updated_metadata': os.path.join(project_folder, 'D_mei_with_updated_metadata'),
-    'E_mei_with_music_features':   os.path.join(project_folder, 'E_mei_with_music_features'),
+    'E_mei_with_updated_music_features':   os.path.join(project_folder, 'E_mei_with_updated_music_features'),
 }
 
 for name, path in folders.items():
@@ -64,7 +64,7 @@ A_mei_to_process                   →  /content/drive/MyDrive/my_mei_project/A_
 B_extracted_metadata_csv           →  /content/drive/MyDrive/my_mei_project/B_extracted_metadata_csv
 C_updated_metadata_csv             →  /content/drive/MyDrive/my_mei_project/C_updated_metadata_csv
 D_mei_with_updated_metadata        →  /content/drive/MyDrive/my_mei_project/D_mei_with_updated_metadata
-E_mei_with_music_features          →  /content/drive/MyDrive/my_mei_project/E_mei_with_music_features
+E_mei_with_updated_music_features          →  /content/drive/MyDrive/my_mei_project/E_mei_with_updated_music_features
 ```
 
 Upload your MEI files to `A_mei_to_process`. All five folders are available as `folders['A_mei_to_process']`, `folders['B_extracted_metadata_csv']`, etc. for the remaining steps.
@@ -235,7 +235,7 @@ updater.process_folder(
 
 ## Step 7 (Optional) — Music Feature Corrections
 
-After updating metadata, you can apply music feature corrections to the revised files in `folders['D_mei_with_updated_metadata']`. Corrected files are written to `folders['E_mei_with_music_features']`.
+After updating metadata, you can apply music feature corrections to the revised files in `folders['D_mei_with_updated_metadata']`. Corrected files are written to `folders['E_mei_with_updated_music_features']`.
 
 ```python
 from mei_tools import MEI_Music_Feature_Processor
@@ -246,7 +246,7 @@ music_feature_processor = MEI_Music_Feature_Processor()
 for mei_path in sorted(glob.glob(folders['D_mei_with_updated_metadata'] + '/*.mei')):
     music_feature_processor.process_music_features(
         mei_path,
-        folders['E_mei_with_music_features'],
+        folders['E_mei_with_updated_music_features'],
         # --- most common corrections (True = apply) ---
         resolve_multibar_ties=True,
         remove_incipit=True,

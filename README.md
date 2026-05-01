@@ -28,13 +28,21 @@ The tools are used as part of the [CRIM (Citations: The Renaissance Imitation Ma
 
 **Detailed guides:** [README.md](README.md), [MEI_Tools_in_Google_Colab.md](MEI_Tools_in_Google_Colab.md)
 
-The metadata workflow follows three stages:
+The **metadata** workflow runs through four folders — A to D:
 
 ```
-Extract  →  Edit  →  Update
+A_mei_to_process  →  B_extracted_metadata_csv  →  C_updated_metadata_csv  →  D_mei_with_updated_metadata
 ```
 
-**Stage 1 — Extract**
+The **music feature** workflow (Section 1.2) takes over from D and writes results to E:
+
+```
+D_mei_with_updated_metadata  →  E_mei_with_updated_music_features
+```
+
+Most users will run both workflows in sequence — A through E. The two stages are separate so that you can re-run either one independently: for example, to correct metadata again without repeating the music feature pass, or to apply music feature corrections to a corpus that has already been through the metadata workflow.
+
+**Stage A → B — Extract**
 
 `MEI_Metadata_Extractor` scans a folder of MEI files and writes one CSV per source type found:
 
@@ -47,7 +55,7 @@ Extract  →  Edit  →  Update
 
 Source type is auto-detected. If your corpus uses only one application, you get one CSV.
 
-**Stage 2 — Edit**
+**Stage B → C — Edit**
 
 Open the CSV in Google Sheets, Excel, or any text editor. The key editing rules:
 
@@ -85,7 +93,7 @@ The CSV columns produced by extraction are:
 | `encoding_annot` | encoding annotation |
 | `humdrum_id` | value of the `!!!id` reference key (Humdrum only) |
 
-**Stage 3 — Update**
+**Stage C → D — Update**
 
 `MEI_Metadata_Updater_Generic` reads the edited CSV and applies non-empty values back to each MEI file. The CSV can be supplied as:
 
@@ -148,10 +156,10 @@ crim_metadata_dict_list = df.to_dict(orient='records')
 ```python
 music_feature_processor = MEI_Music_Feature_Processor()
 
-for mei_path in sorted(glob.glob('mei_to_process/*.mei')):
+for mei_path in sorted(glob.glob('D_mei_with_updated_metadata/*.mei')):
     music_feature_processor.process_music_features(
         mei_path,
-        output_folder='mei_updated',
+        output_folder='E_mei_with_updated_music_features',
         remove_incipit=True,
         fix_elisions=True,
         correct_ficta=True,
@@ -375,21 +383,21 @@ import os
 ```python
 extractor = MEI_Metadata_Extractor(verbose=True)
 extractor.save_csvs(
-    input_folder='mei_to_process',
-    output_folder='extracted_metadata_csv'
+    input_folder='A_mei_to_process',
+    output_folder='B_extracted_metadata_csv'
 )
 ```
 
-One CSV is written per source type found. Edit the CSV(s) in Google Sheets, Excel, or any text editor (see [editing rules](#stage-2--edit) above).
+One CSV is written per source type found. Edit the CSV(s) in Google Sheets, Excel, or any text editor and save the result into `C_updated_metadata_csv` (see [editing rules](#stage-bc--edit) above).
 
 #### Step 3 — Apply updated metadata
 
 ```python
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
-    input_folder='mei_to_process',
-    csv_source='updated_metadata_csv_files/hum_drum_extracted_metadata.csv',
-    output_folder='mei_with_updated_metadata'
+    input_folder='A_mei_to_process',
+    csv_source='C_updated_metadata_csv/hum_drum_extracted_metadata.csv',
+    output_folder='D_mei_with_updated_metadata'
 )
 ```
 
@@ -400,10 +408,10 @@ The `csv_source` can also be a Google Sheets published URL or a raw GitHub URL.
 ```python
 processor = MEI_Music_Feature_Processor()
 
-for mei_path in sorted(glob.glob('mei_with_updated_metadata/*.mei')):
+for mei_path in sorted(glob.glob('D_mei_with_updated_metadata/*.mei')):
     processor.process_music_features(
         mei_path,
-        output_folder='mei_with_updated_music_features',
+        output_folder='E_mei_with_updated_music_features',
         remove_incipit=True,
         remove_pb=True,
         remove_sb=True,
@@ -439,14 +447,14 @@ Adjust the Boolean flags to match the source type and needs of your corpus. Upda
 ```python
 # Extract with CRIM column schema
 extractor = MEI_Metadata_Extractor(verbose=True, crim_mode=True)
-extractor.save_csvs(input_folder='mei_to_process', output_folder='extracted_metadata_csv')
+extractor.save_csvs(input_folder='A_mei_to_process', output_folder='B_extracted_metadata_csv')
 
 # Apply from CRIM Google Sheet published URL
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
-    input_folder='mei_to_process',
+    input_folder='A_mei_to_process',
     csv_source='https://docs.google.com/spreadsheets/d/e/YOURKEY/pub?output=csv',
-    output_folder='mei_with_updated_metadata',
+    output_folder='D_mei_with_updated_metadata',
     crim_mode=True
 )
 ```
@@ -465,7 +473,7 @@ Open `MEI_Tools_in_Google_Colab.ipynb` from this repository directly in Google C
 
 #### Step 2 — Mount Drive and set up folders
 
-Run this once. Set `input_folder` to the path in your Drive where your `.mei` files live — all output folders are created automatically.
+Run this once. Set `project_folder` to a folder in your Drive — all five workflow folders (A through E) are created inside it automatically.
 
 ```python
 import os
@@ -473,22 +481,23 @@ from google.colab import drive
 
 drive.mount('/content/drive')
 
-input_folder = '/content/drive/MyDrive/my_mei_corpus'
-
-base        = os.path.dirname(input_folder)
-corpus_name = os.path.basename(input_folder)
+# ── Set this to your project folder in Google Drive ──
+project_folder = '/content/drive/MyDrive/my_mei_project'
 
 folders = {
-    'input':         input_folder,
-    'extracted_csv': os.path.join(base, corpus_name + '_extracted_csv'),
-    'revised_csv':   os.path.join(base, corpus_name + '_revised_csv'),
-    'updated_mei':   os.path.join(base, corpus_name + '_updated_mei'),
+    'A_mei_to_process':            os.path.join(project_folder, 'A_mei_to_process'),
+    'B_extracted_metadata_csv':    os.path.join(project_folder, 'B_extracted_metadata_csv'),
+    'C_updated_metadata_csv':      os.path.join(project_folder, 'C_updated_metadata_csv'),
+    'D_mei_with_updated_metadata': os.path.join(project_folder, 'D_mei_with_updated_metadata'),
+    'E_mei_with_updated_music_features': os.path.join(project_folder, 'E_mei_with_updated_music_features'),
 }
 
 for name, path in folders.items():
     os.makedirs(path, exist_ok=True)
-    print(f'{name:15s}  →  {path}')
+    print(f'{name:35s}  →  {path}')
 ```
+
+Upload your MEI files to `A_mei_to_process` inside the project folder.
 
 #### Step 3 — Extract metadata to CSV
 
@@ -497,14 +506,14 @@ from mei_tools import MEI_Metadata_Extractor
 
 extractor = MEI_Metadata_Extractor(verbose=True)
 extractor.save_csvs(
-    input_folder=folders['input'],
-    output_folder=folders['extracted_csv']
+    input_folder=folders['A_mei_to_process'],
+    output_folder=folders['B_extracted_metadata_csv']
 )
 ```
 
 #### Step 4 — Edit the CSV
 
-Open the extracted CSV from your Drive in Google Sheets (`File → Import`). Edit the metadata values, then:
+Open the extracted CSV from `B_extracted_metadata_csv` in Google Sheets (`File → Import`). Edit the metadata values, then save it into `C_updated_metadata_csv`:
 - Save back to Drive and use the file path in Step 5 (Option A), **or**
 - Publish the sheet as CSV (`File → Share → Publish to web → CSV`) and use the URL in Step 5 (Option B)
 
@@ -516,13 +525,13 @@ Open the extracted CSV from your Drive in Google Sheets (`File → Import`). Edi
 from mei_tools import MEI_Metadata_Updater_Generic
 import os
 
-csv_source = os.path.join(folders['revised_csv'], 'hum_drum_extracted_metadata.csv')
+csv_source = os.path.join(folders['C_updated_metadata_csv'], 'hum_drum_extracted_metadata.csv')
 
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
-    input_folder=folders['input'],
+    input_folder=folders['A_mei_to_process'],
     csv_source=csv_source,
-    output_folder=folders['updated_mei']
+    output_folder=folders['D_mei_with_updated_metadata']
 )
 ```
 
@@ -535,9 +544,9 @@ csv_source = 'https://docs.google.com/spreadsheets/d/e/YOURKEY/pub?output=csv'
 
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
-    input_folder=folders['input'],
+    input_folder=folders['A_mei_to_process'],
     csv_source=csv_source,
-    output_folder=folders['updated_mei']
+    output_folder=folders['D_mei_with_updated_metadata']
 )
 ```
 
@@ -548,9 +557,9 @@ csv_source = 'https://raw.githubusercontent.com/yourorg/yourrepo/main/metadata/h
 
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
-    input_folder=folders['input'],
+    input_folder=folders['A_mei_to_process'],
     csv_source=csv_source,
-    output_folder=folders['updated_mei']
+    output_folder=folders['D_mei_with_updated_metadata']
 )
 ```
 
@@ -562,10 +571,10 @@ import glob
 
 processor = MEI_Music_Feature_Processor()
 
-for mei_path in sorted(glob.glob(folders['updated_mei'] + '/*.mei')):
+for mei_path in sorted(glob.glob(folders['D_mei_with_updated_metadata'] + '/*.mei')):
     processor.process_music_features(
         mei_path,
-        folders['updated_mei'],
+        folders['E_mei_with_updated_music_features'],
         remove_incipit=True,
         remove_pb=True,
         remove_sb=True,
@@ -626,14 +635,16 @@ mei_tools/
 │   ├── crim_25.mss                   # CRIM style sheet for MuseScore 4
 │   └── musicaFicta_color.qml         # Plug-in for marking ficta notes red
 │
-├── sample_mei_files/                 # Sample MEI files for testing
-├── sample_extracted_metadata_csv_files/  # Pre-generated CSV samples
-├── mei_to_process/                   # Input directory for workflows
-├── mei_with_updated_metadata/        # Output: after metadata update
-├── mei_with_updated_music_features/  # Output: after music feature corrections
+├── sample_mei_files/                        # Sample MEI files for testing
+├── sample_extracted_metadata_csv_files/     # Pre-generated CSV samples
+├── A_mei_to_process/                        # Input: your original MEI files
+├── B_extracted_metadata_csv/                # Output: extracted CSV(s)
+├── C_updated_metadata_csv/                  # Your edited CSV(s) ready to apply
+├── D_mei_with_updated_metadata/             # Output: MEI files with updated metadata
+├── E_mei_with_updated_music_features/       # Output: MEI files with music feature corrections
 │
-├── README.md                         # Full metadata and music feature reference
-├── MEI_Tools_in_Google_Colab.md      # Complete Google Colab guide
+├── README.md                                # Full metadata and music feature reference
+├── MEI_Tools_in_Google_Colab.md             # Complete Google Colab guide
 ├── Sib_to_MEI_Guide.md               # Sibelius encoding guidelines
 └── MuseScore_to_MEI_Guide.md         # MuseScore encoding guidelines
 ```
