@@ -32,7 +32,7 @@ You need:
 
 ## Step 2 — Mount Drive and Set Up Folders
 
-Run this single setup cell. You only need to set **one path** — the base folder where your MEI files live. All output folders are created automatically beneath it.
+Run this single setup cell. Set **one path** — your project folder on Google Drive. All five workflow folders (A through E) are created inside it automatically.
 
 ```python
 import os
@@ -40,35 +40,34 @@ from google.colab import drive
 
 drive.mount('/content/drive')
 
-# ── Set this to the folder in your Drive that contains your .mei files ──
-input_folder = '/content/drive/MyDrive/my_mei_corpus'
-
-# All output folders are derived from the base and created automatically
-base         = os.path.dirname(input_folder)
-corpus_name  = os.path.basename(input_folder)
+# ── Set this to your project folder in Google Drive ──
+# All five workflow folders (A through E) will be created inside it.
+project_folder = '/content/drive/MyDrive/my_mei_project'
 
 folders = {
-    'input':         input_folder,
-    'extracted_csv': os.path.join(base, corpus_name + '_extracted_csv'),
-    'revised_csv':   os.path.join(base, corpus_name + '_revised_csv'),
-    'updated_mei':   os.path.join(base, corpus_name + '_updated_mei'),
+    'A_mei_to_process':            os.path.join(project_folder, 'A_mei_to_process'),
+    'B_extracted_metadata_csv':    os.path.join(project_folder, 'B_extracted_metadata_csv'),
+    'C_updated_metadata_csv':      os.path.join(project_folder, 'C_updated_metadata_csv'),
+    'D_mei_with_updated_metadata': os.path.join(project_folder, 'D_mei_with_updated_metadata'),
+    'E_mei_with_music_features':   os.path.join(project_folder, 'E_mei_with_music_features'),
 }
 
 for name, path in folders.items():
     os.makedirs(path, exist_ok=True)
-    print(f'{name:15s}  →  {path}')
+    print(f'{name:35s}  →  {path}')
 ```
 
-For a corpus at `MyDrive/my_mei_corpus/` this produces:
+For a project at `MyDrive/my_mei_project/` this produces:
 
 ```
-input            →  /content/drive/MyDrive/my_mei_corpus
-extracted_csv    →  /content/drive/MyDrive/my_mei_corpus_extracted_csv
-revised_csv      →  /content/drive/MyDrive/my_mei_corpus_revised_csv
-updated_mei      →  /content/drive/MyDrive/my_mei_corpus_updated_mei
+A_mei_to_process                   →  /content/drive/MyDrive/my_mei_project/A_mei_to_process
+B_extracted_metadata_csv           →  /content/drive/MyDrive/my_mei_project/B_extracted_metadata_csv
+C_updated_metadata_csv             →  /content/drive/MyDrive/my_mei_project/C_updated_metadata_csv
+D_mei_with_updated_metadata        →  /content/drive/MyDrive/my_mei_project/D_mei_with_updated_metadata
+E_mei_with_music_features          →  /content/drive/MyDrive/my_mei_project/E_mei_with_music_features
 ```
 
-All four folders are available as `folders['input']`, `folders['extracted_csv']`, etc. for the remaining steps.
+Upload your MEI files to `A_mei_to_process`. All five folders are available as `folders['A_mei_to_process']`, `folders['B_extracted_metadata_csv']`, etc. for the remaining steps.
 
 ---
 
@@ -79,8 +78,8 @@ from mei_tools import MEI_Metadata_Extractor
 
 extractor = MEI_Metadata_Extractor(verbose=True)
 extractor.save_csvs(
-    input_folder=folders['input'],
-    output_folder=folders['extracted_csv']
+    input_folder=folders['A_mei_to_process'],
+    output_folder=folders['B_extracted_metadata_csv']
 )
 ```
 
@@ -137,7 +136,7 @@ If all your files come from the same application you will get just one CSV.
 
 ## Step 4 — Edit the CSV
 
-Open the CSV from your Drive in **Google Sheets**, **Excel**, or any text editor. Fill in or correct the metadata values, then save it back to Drive (keep the same filename or update the path in Step 6).
+Open the CSV from `B_extracted_metadata_csv` in **Google Sheets**, **Excel**, or any text editor. Fill in or correct the metadata values, then save it into `C_updated_metadata_csv` (keep the same filename or update the path in Step 5).
 
 ### Using Google Sheets as a live metadata source
 
@@ -151,25 +150,23 @@ If you prefer to maintain metadata in a Google Sheet:
 
 ## Step 5 — Apply Updated Metadata to MEI Files
 
+Choose **one** of the three options below depending on where your edited CSV lives.
+
 ### Option A — from a local Drive file
+
+Copy your edited CSV into `folders['C_updated_metadata_csv']`. Adjust the filename for the source type you updated (e.g. `hum_drum_extracted_metadata.csv`, `muse_score_extracted_metadata.csv`, `sib_extracted_metadata.csv`, or `mei_friend_extracted_metadata.csv`).
 
 ```python
 from mei_tools import MEI_Metadata_Updater_Generic
 import os
 
-# Point to the CSV you edited and saved into folders['revised_csv'].
-# Adjust the filename for the source type you updated, e.g.:
-#   hum_drum_extracted_metadata.csv
-#   muse_score_extracted_metadata.csv
-#   sib_extracted_metadata.csv
-#   mei_friend_extracted_metadata.csv
-csv_source = os.path.join(folders['revised_csv'], 'hum_drum_extracted_metadata.csv')
+csv_source = os.path.join(folders['C_updated_metadata_csv'], 'hum_drum_extracted_metadata.csv')
 
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
-    input_folder=folders['input'],
+    input_folder=folders['A_mei_to_process'],
     csv_source=csv_source,
-    output_folder=folders['updated_mei']
+    output_folder=folders['D_mei_with_updated_metadata']
 )
 ```
 
@@ -182,9 +179,9 @@ csv_source = 'https://docs.google.com/spreadsheets/d/e/YOURKEY/pub?output=csv'
 
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
-    input_folder=folders['input'],
+    input_folder=folders['A_mei_to_process'],
     csv_source=csv_source,
-    output_folder=folders['updated_mei']
+    output_folder=folders['D_mei_with_updated_metadata']
 )
 ```
 
@@ -197,15 +194,15 @@ csv_source = 'https://raw.githubusercontent.com/yourorg/yourrepo/main/metadata/h
 
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
-    input_folder=folders['input'],
+    input_folder=folders['A_mei_to_process'],
     csv_source=csv_source,
-    output_folder=folders['updated_mei']
+    output_folder=folders['D_mei_with_updated_metadata']
 )
 ```
 
 ### Output
 
-Each matching MEI file is written to `folders['updated_mei']` with `_rev` appended to the filename, e.g. `Ror0101_rev.mei`. The original files in `folders['input']` are never modified.
+Each matching MEI file is written to `folders['D_mei_with_updated_metadata']` with `_rev` appended to the filename, e.g. `Ror0101_rev.mei`. The original files in `folders['A_mei_to_process']` are never modified.
 
 ---
 
@@ -220,16 +217,16 @@ from mei_tools import MEI_Metadata_Extractor, MEI_Metadata_Updater_Generic
 # Extract using CRIM column names — produces crim_extracted_metadata.csv
 extractor = MEI_Metadata_Extractor(verbose=True, crim_mode=True)
 extractor.save_csvs(
-    input_folder=folders['input'],
-    output_folder=folders['extracted_csv']
+    input_folder=folders['A_mei_to_process'],
+    output_folder=folders['B_extracted_metadata_csv']
 )
 
 # (Edit the CSV, then apply)
 updater = MEI_Metadata_Updater_Generic(verbose=True)
 updater.process_folder(
-    input_folder=folders['input'],
-    csv_source=os.path.join(folders['revised_csv'], 'crim_extracted_metadata.csv'),
-    output_folder=folders['updated_mei'],
+    input_folder=folders['A_mei_to_process'],
+    csv_source=os.path.join(folders['C_updated_metadata_csv'], 'crim_extracted_metadata.csv'),
+    output_folder=folders['D_mei_with_updated_metadata'],
     crim_mode=True
 )
 ```
@@ -238,7 +235,7 @@ updater.process_folder(
 
 ## Step 7 (Optional) — Music Feature Corrections
 
-After updating metadata, you can apply music feature corrections to the revised files:
+After updating metadata, you can apply music feature corrections to the revised files in `folders['D_mei_with_updated_metadata']`. Corrected files are written to `folders['E_mei_with_music_features']`.
 
 ```python
 from mei_tools import MEI_Music_Feature_Processor
@@ -246,11 +243,12 @@ import glob
 
 music_feature_processor = MEI_Music_Feature_Processor()
 
-for mei_path in sorted(glob.glob(folders['updated_mei'] + '/*.mei')):
+for mei_path in sorted(glob.glob(folders['D_mei_with_updated_metadata'] + '/*.mei')):
     music_feature_processor.process_music_features(
         mei_path,
-        folders['updated_mei'],
+        folders['E_mei_with_music_features'],
         # --- most common corrections (True = apply) ---
+        resolve_multibar_ties=True,
         remove_incipit=True,
         remove_pb=True,
         remove_sb=True,
@@ -286,7 +284,7 @@ See the [README](README.md) for a full description of each parameter.
 ## Troubleshooting
 
 ### "No .mei files found"
-Check that `folders['input']` points to the correct Drive location and that the `.mei` files are directly in that folder (not in subfolders). Re-run the setup cell and confirm the printed paths are correct.
+Check that `folders['A_mei_to_process']` points to the correct Drive location and that the `.mei` files are directly in that folder (not in subfolders). Re-run the setup cell and confirm the printed paths are correct.
 
 ### Changes not appearing after code edits
 If you modify mei_tools code locally and re-install, restart the Colab runtime (`Runtime → Restart runtime`) before re-running cells to clear the cached module.
