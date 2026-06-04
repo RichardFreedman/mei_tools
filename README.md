@@ -197,6 +197,9 @@ for mei_path in sorted(glob.glob('D_mei_with_updated_metadata/*.mei')):
 | `correct_cmme_time_signatures` | `False` | Moves time signature attributes from `<staffDef>` to `<scoreDef>` (CMME files) |
 | `correct_jrp_time_signatures` | `False` | Moves `meterSig` elements from JRP `<staffDef>` elements up to `<scoreDef>` |
 | `correct_mrests` | `True` | Expands `<mRest>` elements into three semibreve rests (fixes music21 issue under 3/1 mensuration) |
+| `report_scoredef_mismatches` | `False` | Scans each measure and reports where the `dur.ppq` total of staff n=1 does not match the current `scoreDef` meter; does not modify the file |
+| `fix_scoredef_meters` | `False` | Inserts a corrective `<scoreDef>` before each mismatching measure, inferred from the actual `dur.ppq` total; saves the result to the output folder |
+| `simplify_choice` | `False` | Replaces each `<choice>` element with the `<note>` or `<rest>` found inside its `<corr>` child, removing the `color` attribute from the kept element |
 
 > Note: additional modules can be added based on your experience with particular MEI files.
 
@@ -264,6 +267,15 @@ music21 does not correctly interpret `<mRest>` values under 3/1 mensuration. Thi
 
 ##### `resolve_multibar_ties`
 Converts chains of `<tie>` elements spanning multiple measures into `@tie="i"`, `@tie="m"`, and `@tie="t"` attributes directly on the affected notes.
+
+##### `report_scoredef_mismatches`
+Scans every measure in the file and compares the sum of `dur.ppq` for all notes and rests in staff n=1, layer n=1 against the expected total derived from the most recent `scoreDef` (`meter.count × (1024 ÷ meter.unit)`). Each mismatch is printed with the measure number, expected ppq, actual ppq, and the inferred meter. This module does not modify the file — use `fix_scoredef_meters` to apply corrections.
+
+##### `fix_scoredef_meters`
+For each measure whose `dur.ppq` total does not match the current `scoreDef`, inserts a new `<scoreDef>` immediately before that measure with `meter.count` and `meter.unit` inferred from the actual total. The inferred meter stays in effect until the next existing `scoreDef` or until the measure total returns to the previous expected value, at which point another corrective `<scoreDef>` is inserted. Totals that cannot be matched to a known meter are reported and skipped. The corrected file is written to the output folder.
+
+##### `simplify_choice`
+Replaces each `<choice>` element with the `<note>` or `<rest>` found inside its `<corr>` child, discarding the `<sic>` reading. The `color` attribute is removed from the kept element. Use this to flatten editorial correction markup into a single clean reading.
 
 ---
 
@@ -437,6 +449,9 @@ for mei_path in sorted(glob.glob('D_mei_with_updated_metadata/*.mei')):
         correct_cmme_time_signatures=False,
         correct_jrp_time_signatures=False,
         remove_incipit_leuven=False,
+        report_scoredef_mismatches=False,
+        fix_scoredef_meters=False,
+        simplify_choice=False,
     )
 ```
 
@@ -599,6 +614,9 @@ for mei_path in sorted(glob.glob(folders['D_mei_with_updated_metadata'] + '/*.me
         correct_cmme_time_signatures=False,
         correct_jrp_time_signatures=False,
         remove_incipit_leuven=False,
+        report_scoredef_mismatches=False,
+        fix_scoredef_meters=False,
+        simplify_choice=False,
     )
 ```
 

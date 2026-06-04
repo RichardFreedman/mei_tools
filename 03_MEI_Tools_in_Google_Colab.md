@@ -274,6 +274,9 @@ for mei_path in sorted(glob.glob(folders['D_mei_with_updated_metadata'] + '/*.me
         correct_cmme_time_signatures=False,
         correct_jrp_time_signatures=False,
         remove_incipit_leuven=False,
+        report_scoredef_mismatches=False,
+        fix_scoredef_meters=False,
+        simplify_choice=False,
     )
 ```
 

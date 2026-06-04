@@ -39,7 +39,10 @@ class MEI_Music_Feature_Processor:
                                voice_labels=True,
                                correct_cmme_time_signatures=False,
                                correct_jrp_time_signatures=False,
-                               correct_mrests=True):
+                               correct_mrests=True,
+                               report_scoredef_mismatches=False,
+                               fix_scoredef_meters=False,
+                               simplify_choice=False):
         """ 
         This function will correct various music feature problems in MEI files.  
         All the subfunctions have default values, but these can be changed by passing in a Boolean, 
@@ -758,7 +761,194 @@ class MEI_Music_Feature_Processor:
                 if label_elem is not None and label_elem.text:
                     staffDef.set('label', label_elem.text)
         
-        
+        # replace each <choice> with the <note> or <rest> from its <corr> child
+        # must run before scoreDef meter checks so those notes are direct layer children
+        if simplify_choice:
+            choices = root.findall('.//mei:choice', namespaces=ns)
+            count = len(choices)
+            print(f"Found {count} choice elements to simplify.")
+            replaced = 0
+            for choice in choices:
+                corr = choice.find('mei:corr', namespaces=ns)
+                if corr is None:
+                    continue
+                kept = corr.find('mei:note', namespaces=ns)
+                if kept is None:
+                    kept = corr.find('mei:rest', namespaces=ns)
+                if kept is None:
+                    continue
+                kept.attrib.pop('color', None)
+                parent = choice.getparent()
+                idx = list(parent).index(choice)
+                parent.remove(choice)
+                parent.insert(idx, kept)
+                replaced += 1
+            print(f"Replaced {replaced} choice elements.")
+
+        # meter.count/meter.unit lookup for unknown totals
+        METER_LOOKUP = {
+            768:  ('3', '2'),
+            1024: ('2', '2'),
+            2048: ('4', '2'),
+            3072: ('3', '1'),
+            4096: ('4', '1'),
+        }
+        PPQ_WHOLE = 1024
+
+        # report scoreDef meter mismatches
+        if report_scoredef_mismatches:
+            mismatch_count = 0
+            current_meter_count = None
+            current_meter_unit = None
+
+            elements = []
+            for element in root.iter():
+                tag = element.tag.split('}')[-1] if '}' in element.tag else element.tag
+                if tag in ('scoreDef', 'measure'):
+                    elements.append(element)
+
+            print(f"Found {len(elements)} scoreDef and measure elements to scan.")
+
+            for element in elements:
+                tag = element.tag.split('}')[-1] if '}' in element.tag else element.tag
+
+                if tag == 'scoreDef':
+                    current_meter_count = element.get('meter.count')
+                    current_meter_unit = element.get('meter.unit')
+
+                elif tag == 'measure':
+                    if current_meter_count is None or current_meter_unit is None:
+                        continue
+                    staff = element.find('mei:staff[@n="1"]', namespaces=ns)
+                    if staff is None:
+                        continue
+                    layer = staff.find('mei:layer[@n="1"]', namespaces=ns)
+                    if layer is None:
+                        continue
+                    # if the only content is an mRest, fall back to another staff
+                    layer_children = [c for c in layer if c.tag.split('}')[-1] in ('note', 'rest', 'mRest')]
+                    if len(layer_children) == 1 and layer_children[0].tag.split('}')[-1] == 'mRest':
+                        for other_staff in element.findall('mei:staff', namespaces=ns):
+                            if other_staff.get('n') == '1':
+                                continue
+                            other_layer = other_staff.find('mei:layer[@n="1"]', namespaces=ns)
+                            if other_layer is not None:
+                                other_children = [c for c in other_layer if c.tag.split('}')[-1] in ('note', 'rest', 'mRest')]
+                                if other_children and not all(c.tag.split('}')[-1] == 'mRest' for c in other_children):
+                                    layer = other_layer
+                                    break
+                    actual = sum(
+                        int(child.get('dur.ppq', 0))
+                        for child in layer
+                        if child.tag.split('}')[-1] in ('note', 'rest', 'mRest')
+                    )
+                    try:
+                        expected = int(current_meter_count) * (PPQ_WHOLE // int(current_meter_unit))
+                    except (ValueError, ZeroDivisionError):
+                        continue
+                    if actual != expected:
+                        measure_n = element.get('n', '?')
+                        measure_id = element.get(f"{{{ns['xml']}}}id", '?')
+                        inferred = METER_LOOKUP.get(actual)
+                        inferred_str = f"{inferred[0]}/{inferred[1]}" if inferred else "unknown"
+                        mismatch_count += 1
+                        print(
+                            f"Mismatch in measure {measure_n} (id: {measure_id}): "
+                            f"scoreDef expects {expected} ppq "
+                            f"({current_meter_count}/{current_meter_unit}), "
+                            f"actual = {actual} ppq, inferred meter = {inferred_str}"
+                        )
+
+            print(f"Found {mismatch_count} meter mismatches.")
+
+        # insert corrective scoreDef elements where meter mismatches occur
+        if fix_scoredef_meters:
+            mismatch_count = 0
+            inserted_count = 0
+            current_meter_count = None
+            current_meter_unit = None
+
+            elements = []
+            for element in root.iter():
+                tag = element.tag.split('}')[-1] if '}' in element.tag else element.tag
+                if tag in ('scoreDef', 'measure'):
+                    elements.append(element)
+
+            parent_map = {c: p for p in root.iter() for c in p}
+
+            i = 0
+            while i < len(elements):
+                element = elements[i]
+                tag = element.tag.split('}')[-1] if '}' in element.tag else element.tag
+
+                if tag == 'scoreDef':
+                    current_meter_count = element.get('meter.count')
+                    current_meter_unit = element.get('meter.unit')
+
+                elif tag == 'measure':
+                    if current_meter_count is None or current_meter_unit is None:
+                        i += 1
+                        continue
+                    staff = element.find('mei:staff[@n="1"]', namespaces=ns)
+                    if staff is None:
+                        i += 1
+                        continue
+                    layer = staff.find('mei:layer[@n="1"]', namespaces=ns)
+                    if layer is None:
+                        i += 1
+                        continue
+                    # if the only content is an mRest, fall back to another staff
+                    layer_children = [c for c in layer if c.tag.split('}')[-1] in ('note', 'rest', 'mRest')]
+                    if len(layer_children) == 1 and layer_children[0].tag.split('}')[-1] == 'mRest':
+                        for other_staff in element.findall('mei:staff', namespaces=ns):
+                            if other_staff.get('n') == '1':
+                                continue
+                            other_layer = other_staff.find('mei:layer[@n="1"]', namespaces=ns)
+                            if other_layer is not None:
+                                other_children = [c for c in other_layer if c.tag.split('}')[-1] in ('note', 'rest', 'mRest')]
+                                if other_children and not all(c.tag.split('}')[-1] == 'mRest' for c in other_children):
+                                    layer = other_layer
+                                    break
+                    actual = sum(
+                        int(child.get('dur.ppq', 0))
+                        for child in layer
+                        if child.tag.split('}')[-1] in ('note', 'rest', 'mRest')
+                    )
+                    try:
+                        expected = int(current_meter_count) * (PPQ_WHOLE // int(current_meter_unit))
+                    except (ValueError, ZeroDivisionError):
+                        i += 1
+                        continue
+                    if actual != expected:
+                        measure_n = element.get('n', '?')
+                        mismatch_count += 1
+                        inferred = METER_LOOKUP.get(actual)
+                        if inferred is None:
+                            print(
+                                f"  Skipping fix for measure {measure_n}: "
+                                f"no meter found for {actual} ppq"
+                            )
+                        else:
+                            parent = parent_map.get(element)
+                            if parent is not None:
+                                new_score_def = etree.Element(f"{{{ns['mei']}}}scoreDef")
+                                new_score_def.set('meter.count', inferred[0])
+                                new_score_def.set('meter.unit', inferred[1])
+                                idx = list(parent).index(element)
+                                parent.insert(idx, new_score_def)
+                                inserted_count += 1
+                                current_meter_count, current_meter_unit = inferred
+                                print(
+                                    f"Inserted scoreDef meter.count={inferred[0]} "
+                                    f"meter.unit={inferred[1]} before measure {measure_n}"
+                                )
+                                parent_map = {c: p for p in root.iter() for c in p}
+
+                i += 1
+
+            print(f"Found {mismatch_count} meter mismatches.")
+            print(f"Inserted {inserted_count} corrective scoreDef elements.")
+
         # save the result
         output_file_path = os.path.join(output_folder, revised_name)
         
