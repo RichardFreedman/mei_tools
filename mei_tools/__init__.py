@@ -6,5 +6,5 @@ from .mei_metadata_updater_generic import MEI_Metadata_Updater_Generic
 
 
 __package__ = __name__
-__version__ = "2.0.3"
+__version__ = "2.0.4"
 __author__ = "Richard Freedman"
