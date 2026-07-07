@@ -642,15 +642,25 @@ class MEI_Music_Feature_Processor:
                             if current_index < len(all_syllables) - 1:
                                 # here is the _next syllable_, which is the one with the real elision
                                 next_syl = all_syllables[current_index + 1]
-                                if next_syl.text and len(next_syl.text) > 1:
+                                if next_syl.text and "\u035c" in next_syl.text:
                                     original = next_syl.text
-                                    # replace the combining breve if present (which is \u035c) with underscore
-                                    next_syl.text = next_syl.text.replace("\u035c", "_") 
+                                    # replace the combining breve (\u035c) with underscore
+                                    next_syl.text = next_syl.text.replace("\u035c", "_")
                                     print(f"Modified: '{original}' → '{next_syl.text}'")
                         except (ValueError, IndexError) as e:
                             print(f"Warning: Could not process syllable index: {e}")
                     else:
                         print(f"Warning: No layer ancestor found for syllable {syllable.get('xml:id')}")
+
+            # Musescore also exports elisions within a single note as one syl
+            # whose own text contains the combining breve (\u035c), e.g. "e͜e"
+            # (con="d" wordpos="m" already set). These aren't caught by the
+            # con="b" pass above since there's no separate "next" syllable to fix.
+            for syllable in syllables:
+                if syllable.text and "\u035c" in syllable.text:
+                    original = syllable.text
+                    syllable.text = syllable.text.replace("\u035c", "_")
+                    print(f"Modified: '{original}' → '{syllable.text}'")
         
         # Replace slurs with ties
         if slur_to_tie:
